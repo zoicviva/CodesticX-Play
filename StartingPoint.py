@@ -4,9 +4,8 @@ from CommentHandler import CommentHandler
 from Analyser import Analyser
 from OperationCount import OperationCount
 
-# Run this vivek
 if __name__=="__main__" : 
-    fileName=UtilitiesCC.copyFileToOrig("/Users/vivek.keshri/dq_base_7th_march.sql")
+    fileName=UtilitiesCC.copyFileToOrig("/Users/tata.swaroop/Desktop/Desktop/DQ/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_cmptn.sql")
     fileContent=CommentHandler(fileName).removeComments()
     UtilitiesCC.writeTextToFile("work", fileName, fileContent)
     fileObj=StatementSequencer(fileName)
