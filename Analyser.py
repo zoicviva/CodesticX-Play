@@ -124,6 +124,7 @@ class Analyser:
         return json.dumps(dictObj);
     
     def startAnalysing(self,fileName):
+        #
         fileContent=open("temp/"+fileName,"r")
         jsonFileName="temp/"+fileName+".json"
         toJson=open(jsonFileName,"w")
