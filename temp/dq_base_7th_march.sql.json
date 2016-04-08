@@ -1,0 +1,178 @@
+{"subtype": "declare", "type": "others", "seq_nr": 1, "proc_seq_nr": 1}
+{"subtype": "declare", "type": "others", "seq_nr": 2, "proc_seq_nr": 2}
+{"subtype": "declare", "type": "others", "seq_nr": 3, "proc_seq_nr": 3}
+{"subtype": "declare", "type": "others", "seq_nr": 4, "proc_seq_nr": 4}
+{"subtype": "declare", "type": "others", "seq_nr": 5, "proc_seq_nr": 5}
+{"subtype": "declare", "type": "others", "seq_nr": 6, "proc_seq_nr": 6}
+{"subtype": "declare", "type": "others", "seq_nr": 7, "proc_seq_nr": 7}
+{"subtype": "declare", "type": "others", "seq_nr": 8, "proc_seq_nr": 8}
+{"subtype": "declare", "type": "others", "seq_nr": 9, "proc_seq_nr": 9}
+{"subtype": "declare", "type": "others", "seq_nr": 10, "proc_seq_nr": 10}
+{"subtype": "declare", "type": "others", "seq_nr": 11, "proc_seq_nr": 11}
+{"subtype": "declare", "type": "others", "seq_nr": 12, "proc_seq_nr": 12}
+{"subtype": "declare", "type": "others", "seq_nr": 13, "proc_seq_nr": 13}
+{"subtype": "declare", "type": "others", "seq_nr": 14, "proc_seq_nr": 14}
+{"subtype": "declare", "type": "others", "seq_nr": 15, "proc_seq_nr": 15}
+{"subtype": "declare", "type": "others", "seq_nr": 16, "proc_seq_nr": 16}
+{"subtype": "declare", "type": "others", "seq_nr": 17, "proc_seq_nr": 17}
+{"subtype": "declare", "type": "others", "seq_nr": 18, "proc_seq_nr": 18}
+{"subtype": "declare", "type": "others", "seq_nr": 19, "proc_seq_nr": 19}
+{"subtype": "declare", "type": "others", "seq_nr": 20, "proc_seq_nr": 20}
+{"subtype": "declare", "type": "others", "seq_nr": 21, "proc_seq_nr": 21}
+{"subtype": "declare", "type": "others", "seq_nr": 22, "proc_seq_nr": 22}
+{"proc_seq_nr": 23, "value": "sqlcode", "subtype": "set", "seq_nr": 1, "variable": "ln_sql_code", "type": "others"}
+{"proc_seq_nr": 24, "value": "'failed'", "subtype": "set", "seq_nr": 2, "variable": "lv_out_status", "type": "others"}
+{"proc_seq_nr": 25, "value": "'error in : ' || lv_msg || ' - sqlstate: ' || lv_sql_state || ', sqlcode: ' || cast(ln_sql_code as char(5)) || 'session id' || ln_session_id", "subtype": "set", "seq_nr": 3, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 26, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 1, "subtype": "call", "type": "others"}
+{"subtype": "select", "type": "dql", "seq_nr": 1, "proc_seq_nr": 27}
+{"proc_seq_nr": 28, "value": "'starting in session id '||' in session id ' || ln_session_id || ' and in_batch_sk ' || in_batch_sk", "subtype": "set", "seq_nr": 4, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 29, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 2, "subtype": "call", "type": "others"}
+{"type": "dml", "seq_nr": 1, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_shipments", "proc_seq_nr": 30, "alias_name": ""}
+{"type": "dml", "seq_nr": 2, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_fiscal_dt_qualifier", "proc_seq_nr": 31, "alias_name": ""}
+{"type": "dml", "seq_nr": 3, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_fiscal_dates", "proc_seq_nr": 32, "alias_name": ""}
+{"type": "dml", "seq_nr": 4, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_event_latency_dtls", "proc_seq_nr": 33, "alias_name": ""}
+{"type": "dml", "seq_nr": 5, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_event_uplift_dtls", "proc_seq_nr": 34, "alias_name": ""}
+{"type": "dml", "seq_nr": 6, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_doc_id_info", "proc_seq_nr": 35, "alias_name": ""}
+{"type": "dml", "seq_nr": 7, "subtype": "delete", "table_name": "logistics_app.wrk_em_carrier_dq_event_dtls", "proc_seq_nr": 36, "alias_name": ""}
+{"type": "dml", "seq_nr": 8, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_uplift_ind", "proc_seq_nr": 37, "alias_name": ""}
+{"subtype": "select", "type": "dql", "seq_nr": 2, "proc_seq_nr": 38}
+{"subtype": "select", "type": "dql", "seq_nr": 3, "proc_seq_nr": 39}
+{"subtype": "select", "type": "dql", "seq_nr": 4, "proc_seq_nr": 40}
+{"subtype": "select", "type": "dql", "seq_nr": 5, "proc_seq_nr": 41}
+{"subtype": "select", "type": "dql", "seq_nr": 6, "proc_seq_nr": 42}
+{"proc_seq_nr": 43, "value": "'inserting into wrk_em_dq_shipments for date range : '|| ld_start_dt ||' '|| ld_end_dt", "subtype": "set", "seq_nr": 5, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 44, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 3, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_shipments", "type": "dml", "seq_nr": 1, "proc_seq_nr": 45}
+{"type": "others", "seq_nr": 1, "subtype": "collect", "table_name": "logistics_app.wrk_em_dq_shipments", "proc_seq_nr": 46, "is_table_level": "Y"}
+{"proc_seq_nr": 47, "value": "'inserting into work table wrk_em_dq_doc_id_info'", "subtype": "set", "seq_nr": 6, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 48, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 4, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_doc_id_info", "type": "dml", "seq_nr": 2, "proc_seq_nr": 49}
+{"type": "others", "seq_nr": 2, "subtype": "collect", "table_name": "logistics_app.wrk_em_dq_doc_id_info", "proc_seq_nr": 50, "is_table_level": "Y"}
+{"proc_seq_nr": 51, "value": "'inserting into work table wrk_em_carrier_dq_event_dtls for pac and amr'", "subtype": "set", "seq_nr": 7, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 52, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 5, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_carrier_dq_event_dtls", "type": "dml", "seq_nr": 3, "proc_seq_nr": 53}
+{"proc_seq_nr": 54, "value": "'inserting into work table wrk_em_carrier_dq_event_dtls for euro'", "subtype": "set", "seq_nr": 8, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 55, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 6, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_carrier_dq_event_dtls", "type": "dml", "seq_nr": 4, "proc_seq_nr": 56}
+{"proc_seq_nr": 57, "value": "'inserting into work table wrk_em_carrier_dq_event_dtls for first attempt'", "subtype": "set", "seq_nr": 9, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 58, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 7, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_carrier_dq_event_dtls", "type": "dml", "seq_nr": 5, "proc_seq_nr": 59}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_carrier_dq_event_dtls", "type": "dml", "seq_nr": 6, "proc_seq_nr": 60}
+{"proc_seq_nr": 61, "value": "'deleting from wrk_em_carrier_dq_event_dtls for event cd appointment requested of scac : dhlg, emsy, fde, lasg, logd, rac, rpsi, tnt, upsn '", "subtype": "set", "seq_nr": 10, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 62, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 8, "subtype": "call", "type": "others"}
+{"type": "dml", "seq_nr": 9, "subtype": "delete", "table_name": "logistics_app.wrk_em_carrier_dq_event_dtls", "proc_seq_nr": 63, "alias_name": ""}
+{"type": "others", "seq_nr": 3, "subtype": "collect", "table_name": "logistics_app.wrk_em_carrier_dq_event_dtls", "proc_seq_nr": 64, "is_table_level": "Y"}
+{"proc_seq_nr": 65, "value": "'inserting into work table wrk_em_dq_uplift_ind for marking uflift'", "subtype": "set", "seq_nr": 11, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 66, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 9, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_uplift_ind", "type": "dml", "seq_nr": 7, "proc_seq_nr": 67}
+{"type": "others", "seq_nr": 4, "subtype": "collect", "table_name": "logistics_app.wrk_em_dq_uplift_ind", "proc_seq_nr": 68, "is_table_level": "Y"}
+{"proc_seq_nr": 69, "value": "'inserting into work table wrk_em_dq_fiscal_dt_qualifier'", "subtype": "set", "seq_nr": 12, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 70, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 10, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_fiscal_dt_qualifier", "type": "dml", "seq_nr": 8, "proc_seq_nr": 71}
+{"type": "others", "seq_nr": 5, "subtype": "collect", "table_name": "logistics_app.wrk_em_dq_fiscal_dt_qualifier", "proc_seq_nr": 72, "is_table_level": "Y"}
+{"proc_seq_nr": 73, "value": "'inserting into work table wrk_em_dq_fiscl_dt for pac and amr'", "subtype": "set", "seq_nr": 13, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 74, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 11, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_fiscal_dates", "type": "dml", "seq_nr": 9, "proc_seq_nr": 75}
+{"proc_seq_nr": 76, "value": "'inserting into work table wrk_em_dq_fiscl_dt for euro'", "subtype": "set", "seq_nr": 14, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 77, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 12, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_fiscal_dates", "type": "dml", "seq_nr": 10, "proc_seq_nr": 78}
+{"type": "others", "seq_nr": 6, "subtype": "collect", "table_name": "logistics_app.wrk_em_dq_fiscal_dates", "proc_seq_nr": 79, "is_table_level": "Y"}
+{"proc_seq_nr": 80, "value": "'inserting into work table wrk_em_dq_event_latency_dtls for pac and amr'", "subtype": "set", "seq_nr": 15, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 81, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 13, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_event_latency_dtls", "type": "dml", "seq_nr": 11, "proc_seq_nr": 82}
+{"proc_seq_nr": 83, "value": "'inserting into work table wrk_em_dq_event_latency_dtls for euro'", "subtype": "set", "seq_nr": 16, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 84, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 14, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_event_latency_dtls", "type": "dml", "seq_nr": 12, "proc_seq_nr": 85}
+{"type": "others", "seq_nr": 7, "subtype": "collect", "table_name": "logistics_app.wrk_em_dq_event_latency_dtls", "proc_seq_nr": 86, "is_table_level": "Y"}
+{"proc_seq_nr": 87, "value": "'inserting into work table wrk_em_dq_event_uplift_dtls'", "subtype": "set", "seq_nr": 17, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 88, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 15, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_event_uplift_dtls", "type": "dml", "seq_nr": 13, "proc_seq_nr": 89}
+{"proc_seq_nr": 90, "value": "'delete from work table wrk_em_dq_event_uplift_dtls for rma'", "subtype": "set", "seq_nr": 18, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 91, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 16, "subtype": "call", "type": "others"}
+{"type": "dml", "seq_nr": 10, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_event_uplift_dtls", "proc_seq_nr": 92, "alias_name": ""}
+{"proc_seq_nr": 93, "value": "'updating work table wrk_em_carrier_dq_event_dtls for marking uplift y for pac'", "subtype": "set", "seq_nr": 19, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 94, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 17, "subtype": "call", "type": "others"}
+{"type": "dml", "seq_nr": 1, "subtype": "update", "table_name": "logistics_app.wrk_em_dq_event_uplift_dtls", "proc_seq_nr": 95, "alias_name": "a"}
+{"type": "dml", "seq_nr": 2, "subtype": "update", "table_name": "logistics_app.wrk_em_dq_event_uplift_dtls", "proc_seq_nr": 96, "alias_name": "a"}
+{"proc_seq_nr": 97, "value": "'updating work table wrk_em_carrier_dq_event_dtls for marking uplift y for euro'", "subtype": "set", "seq_nr": 20, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 98, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 18, "subtype": "call", "type": "others"}
+{"type": "dml", "seq_nr": 3, "subtype": "update", "table_name": "logistics_app.wrk_em_dq_event_uplift_dtls", "proc_seq_nr": 99, "alias_name": "a"}
+{"type": "others", "seq_nr": 8, "subtype": "collect", "table_name": "logistics_app.wrk_em_dq_event_uplift_dtls", "proc_seq_nr": 100, "is_table_level": "Y"}
+{"type": "dml", "seq_nr": 4, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 101, "alias_name": ""}
+{"type": "dml", "seq_nr": 5, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 102, "alias_name": ""}
+{"type": "dml", "seq_nr": 6, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 103, "alias_name": ""}
+{"type": "dml", "seq_nr": 7, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 104, "alias_name": ""}
+{"type": "dml", "seq_nr": 8, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 105, "alias_name": ""}
+{"type": "dml", "seq_nr": 9, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 106, "alias_name": ""}
+{"proc_seq_nr": 107, "value": "'deleteing main table em_carrier_dq_raw_file for pac and amr'", "subtype": "set", "seq_nr": 21, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 108, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 19, "subtype": "call", "type": "others"}
+{"type": "dml", "seq_nr": 11, "subtype": "delete", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 109, "alias_name": "ecd"}
+{"proc_seq_nr": 110, "value": "'deleteing main table em_carrier_dq_raw_file for euro'", "subtype": "set", "seq_nr": 22, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 111, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 20, "subtype": "call", "type": "others"}
+{"type": "dml", "seq_nr": 12, "subtype": "delete", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 112, "alias_name": "ecd"}
+{"proc_seq_nr": 113, "value": "'inserting into main table em_carrier_dq_raw_file'", "subtype": "set", "seq_nr": 23, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 114, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 21, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.em_carrier_dq_raw_file", "type": "dml", "seq_nr": 14, "proc_seq_nr": 115}
+{"type": "dml", "seq_nr": 13, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_cancelled_shipments", "proc_seq_nr": 116, "alias_name": ""}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_cancelled_shipments", "type": "dml", "seq_nr": 15, "proc_seq_nr": 117}
+{"type": "dml", "seq_nr": 14, "subtype": "delete", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 118, "alias_name": "a"}
+{"type": "dml", "seq_nr": 10, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 119, "alias_name": ""}
+{"type": "dml", "seq_nr": 11, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 120, "alias_name": ""}
+{"type": "dml", "seq_nr": 12, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 121, "alias_name": ""}
+{"type": "dml", "seq_nr": 13, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 122, "alias_name": ""}
+{"type": "dml", "seq_nr": 14, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 123, "alias_name": ""}
+{"type": "dml", "seq_nr": 15, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 124, "alias_name": "a"}
+{"type": "dml", "seq_nr": 16, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 125, "alias_name": "a"}
+{"proc_seq_nr": 126, "value": "'inserting into main table wrk_em_dq_sent_items for pac and amr'", "subtype": "set", "seq_nr": 24, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 127, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 22, "subtype": "call", "type": "others"}
+{"type": "dml", "seq_nr": 15, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_sent_items", "proc_seq_nr": 128, "alias_name": ""}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_sent_items", "type": "dml", "seq_nr": 16, "proc_seq_nr": 129}
+{"proc_seq_nr": 130, "value": "'inserting into main table wrk_em_dq_sent_items for euro'", "subtype": "set", "seq_nr": 25, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 131, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 23, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_sent_items", "type": "dml", "seq_nr": 17, "proc_seq_nr": 132}
+{"type": "others", "seq_nr": 9, "subtype": "collect", "table_name": "logistics_app.wrk_em_dq_sent_items", "proc_seq_nr": 133, "is_table_level": "Y"}
+{"type": "dml", "seq_nr": 16, "subtype": "delete", "table_name": "logistics_app.em_carrier_dq_wk_accuracy", "proc_seq_nr": 134, "alias_name": ""}
+{"subtype": "insert", "table_name": "logistics_app.em_carrier_dq_wk_accuracy", "type": "dml", "seq_nr": 18, "proc_seq_nr": 135}
+{"subtype": "insert", "table_name": "logistics_app.em_carrier_dq_wk_accuracy", "type": "dml", "seq_nr": 19, "proc_seq_nr": 136}
+{"type": "dml", "seq_nr": 17, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_wk_accuracy", "proc_seq_nr": 137, "alias_name": ""}
+{"type": "dml", "seq_nr": 18, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 138, "alias_name": ""}
+{"type": "dml", "seq_nr": 19, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 139, "alias_name": ""}
+{"type": "dml", "seq_nr": 20, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 140, "alias_name": ""}
+{"type": "dml", "seq_nr": 21, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 141, "alias_name": ""}
+{"type": "dml", "seq_nr": 22, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 142, "alias_name": ""}
+{"type": "dml", "seq_nr": 23, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 143, "alias_name": "a"}
+{"type": "dml", "seq_nr": 24, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 144, "alias_name": "a"}
+{"proc_seq_nr": 145, "value": "'inserting into main table wrk_em_dq_sent_items_mth for pac and amr'", "subtype": "set", "seq_nr": 26, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 146, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 24, "subtype": "call", "type": "others"}
+{"type": "dml", "seq_nr": 17, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_sent_items_mth", "proc_seq_nr": 147, "alias_name": ""}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_sent_items_mth", "type": "dml", "seq_nr": 20, "proc_seq_nr": 148}
+{"proc_seq_nr": 149, "value": "'inserting into main table wrk_em_dq_sent_items_mth for euro'", "subtype": "set", "seq_nr": 27, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 150, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 25, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_sent_items_mth", "type": "dml", "seq_nr": 21, "proc_seq_nr": 151}
+{"type": "others", "seq_nr": 10, "subtype": "collect", "table_name": "logistics_app.wrk_em_dq_sent_items_mth", "proc_seq_nr": 152, "is_table_level": "Y"}
+{"type": "dml", "seq_nr": 18, "subtype": "delete", "table_name": "logistics_app.em_carrier_dq_mth_accuracy", "proc_seq_nr": 153, "alias_name": ""}
+{"subtype": "insert", "table_name": "logistics_app.em_carrier_dq_mth_accuracy", "type": "dml", "seq_nr": 22, "proc_seq_nr": 154}
+{"subtype": "insert", "table_name": "logistics_app.em_carrier_dq_mth_accuracy", "type": "dml", "seq_nr": 23, "proc_seq_nr": 155}
+{"type": "dml", "seq_nr": 25, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_mth_accuracy", "proc_seq_nr": 156, "alias_name": ""}
+{"type": "dml", "seq_nr": 26, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 157, "alias_name": ""}
+{"type": "dml", "seq_nr": 27, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 158, "alias_name": ""}
+{"type": "dml", "seq_nr": 28, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 159, "alias_name": ""}
+{"type": "dml", "seq_nr": 29, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 160, "alias_name": ""}
+{"type": "dml", "seq_nr": 30, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 161, "alias_name": ""}
+{"type": "dml", "seq_nr": 31, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 162, "alias_name": "a"}
+{"type": "dml", "seq_nr": 32, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_raw_file", "proc_seq_nr": 163, "alias_name": "a"}
+{"proc_seq_nr": 164, "value": "'inserting into main table wrk_em_dq_sent_items_qtr for pac and amr'", "subtype": "set", "seq_nr": 28, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 165, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 26, "subtype": "call", "type": "others"}
+{"type": "dml", "seq_nr": 19, "subtype": "delete", "table_name": "logistics_app.wrk_em_dq_sent_items_qtr", "proc_seq_nr": 166, "alias_name": ""}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_sent_items_qtr", "type": "dml", "seq_nr": 24, "proc_seq_nr": 167}
+{"proc_seq_nr": 168, "value": "'inserting into main table wrk_em_dq_sent_items_qtr for euro'", "subtype": "set", "seq_nr": 29, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 169, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 27, "subtype": "call", "type": "others"}
+{"subtype": "insert", "table_name": "logistics_app.wrk_em_dq_sent_items_qtr", "type": "dml", "seq_nr": 25, "proc_seq_nr": 170}
+{"type": "others", "seq_nr": 11, "subtype": "collect", "table_name": "logistics_app.wrk_em_dq_sent_items_qtr", "proc_seq_nr": 171, "is_table_level": "Y"}
+{"type": "dml", "seq_nr": 20, "subtype": "delete", "table_name": "logistics_app.em_carrier_dq_qtr_accuracy", "proc_seq_nr": 172, "alias_name": ""}
+{"subtype": "insert", "table_name": "logistics_app.em_carrier_dq_qtr_accuracy", "type": "dml", "seq_nr": 26, "proc_seq_nr": 173}
+{"subtype": "insert", "table_name": "logistics_app.em_carrier_dq_qtr_accuracy", "type": "dml", "seq_nr": 27, "proc_seq_nr": 174}
+{"type": "dml", "seq_nr": 33, "subtype": "update", "table_name": "logistics_app.em_carrier_dq_qtr_accuracy", "proc_seq_nr": 175, "alias_name": ""}
+{"proc_seq_nr": 176, "value": "'procedure logistics_user.sp_load_em_carrier_dq_raw_file completed'", "subtype": "set", "seq_nr": 30, "variable": "lv_msg", "type": "others"}
+{"proc_name": "logistics_user.log_process_run_message", "proc_seq_nr": 177, "args": ["lv_err_component", "lv_msg", "current_timestamp(0)"], "seq_nr": 28, "subtype": "call", "type": "others"}
+{"proc_seq_nr": 178, "value": "'completed'", "subtype": "set", "seq_nr": 31, "variable": "lv_out_status", "type": "others"}
