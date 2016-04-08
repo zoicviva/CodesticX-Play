@@ -4,6 +4,7 @@ from CommentHandler import CommentHandler
 from Analyser import Analyser
 from OperationCount import OperationCount
 
+#Run it to get html
 if __name__=="__main__" : 
     fileName=UtilitiesCC.copyFileToOrig("/Users/tata.swaroop/Desktop/Desktop/DQ/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_cmptn.sql")
     fileContent=CommentHandler(fileName).removeComments()
