@@ -4,7 +4,7 @@ from CommentHandler import CommentHandler
 from Analyser import Analyser
 from OperationCount import OperationCount
 
-# Run this to generate the HTML report
+# Run this 
 if __name__=="__main__" : 
     fileName=UtilitiesCC.copyFileToOrig("/Users/vivek.keshri/dq_base_7th_march.sql")
     fileContent=CommentHandler(fileName).removeComments()
