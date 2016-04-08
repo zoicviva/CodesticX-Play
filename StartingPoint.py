@@ -4,7 +4,7 @@ from CommentHandler import CommentHandler
 from Analyser import Analyser
 from OperationCount import OperationCount
 
-# Run this 
+# Run this vivek
 if __name__=="__main__" : 
     fileName=UtilitiesCC.copyFileToOrig("/Users/vivek.keshri/dq_base_7th_march.sql")
     fileContent=CommentHandler(fileName).removeComments()
