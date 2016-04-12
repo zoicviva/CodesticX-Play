@@ -13,6 +13,39 @@ class Analyser:
         self.declareSeqNumeber=0
         self.collectSeqNumeber=0
         
+    def masterJson(self,fileName):
+        dictObj={}
+        noCmntFile=open("work/"+fileName,"r")
+        fileContent=noCmntFile.read()
+        noCmntFile.close()
+        preProcName=re.search('replace\s*procedure([^\n]+) \(',fileContent.lower()).group(1)
+        finalProcName=re.sub(' ', '', preProcName.strip())
+        dictObj["proc_name"]=finalProcName
+        cmntFile=open("orig/"+fileName,"r")
+        fileContent=cmntFile.read()
+        cmntFile.close()
+        noOfSinCmnts=len(re.findall('--.*',fileContent))
+        noOfMulCmnts=len(re.findall("(/\*([^*]|(\*+[^*/]))*\*+/)|(//.*)",fileContent))
+        dictObj["no_of_cmnts"]=noOfSinCmnts+noOfMulCmnts
+        dictObj["single_line_cmnts"]=noOfSinCmnts
+        dictObj["multi_line_cmnts"]=noOfMulCmnts
+        if (re.search('EXIT\s*HANDLER',fileContent) or re.search('CONTINUE\s*HANDLER',fileContent)):
+            excptn="Y"
+        else:
+            excptn="N"
+        dictObj["exception_handled"]=excptn
+        lineCount=len(re.findall("\n",fileContent))+1
+        dictObj["no_of_lines"]=lineCount
+        stmtFile=open("temp/"+fileName,"r")
+        fileContent=stmtFile.read()
+        stmtFile.close()
+        stmtCount=len(re.findall("\n",fileContent))
+        dictObj["no_of_stmts"]=stmtCount
+        jsonFileName="temp/"+fileName+".master.json"
+        toJson=open(jsonFileName,"w")
+        toJson.write(json.dumps(dictObj))
+        toJson.close()
+        
     def analyseCall(self,stmt):
         dictObj={}
         dictObj["type"]="others"
@@ -125,6 +158,7 @@ class Analyser:
     
     def startAnalysing(self,fileName):
         #
+        self.masterJson(fileName)
         fileContent=open("temp/"+fileName,"r")
         jsonFileName="temp/"+fileName+".json"
         toJson=open(jsonFileName,"w")
