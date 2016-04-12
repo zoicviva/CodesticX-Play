@@ -48,6 +48,11 @@ class CodeFormatter:
                 first_word=words[0]
                 if (first_word.lower() == 'insert' or insert_seen==1):
                     insert_seen=1
+                    if re.search(',\s*--.*',line):
+                        l1=re.search(',\s*--.*',line).group()
+                        l2=re.sub(',','',l1)
+                        l3=l2+','
+                        line=line.replace(l1,l3)
                     stmt+=line
                     last_word=line.strip().split()[-1].lower()
                     if re.search('\)[ ]*$',last_word):
@@ -95,7 +100,7 @@ class CodeFormatter:
         return "formatted/"+self.fileName
         
 if __name__=="__main__":
-    obj=CodeFormatter("/Users/tata.swaroop/Desktop/Desktop/DQ/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_cmptn.sql")
+    obj=CodeFormatter("/Users/tata.swaroop/Desktop/SP_LOAD_LDW_FOB_REPORTING.sql")
     result=obj.formatIt()
     print "Formatting Done File present at :"+result
     print "done"
