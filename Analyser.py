@@ -25,7 +25,7 @@ class Analyser:
         fileContent=cmntFile.read()
         cmntFile.close()
         noOfSinCmnts=len(re.findall('--.*',fileContent))
-        noOfMulCmnts=len(re.findall("(/\*([^*]|(\*+[^*/]))*\*+/)|(//.*)",fileContent))
+        noOfMulCmnts=len(re.findall("(/\*([^*]|(\*+[^*/]))*\*+/)",fileContent))
         dictObj["no_of_cmnts"]=noOfSinCmnts+noOfMulCmnts
         dictObj["single_line_cmnts"]=noOfSinCmnts
         dictObj["multi_line_cmnts"]=noOfMulCmnts
