@@ -1,5 +1,7 @@
 import json
 import re
+from TableExtractor import TableExtractor
+
 class Analyser:
     def __init__(self):
         self.procSeqNumeber=0
@@ -69,7 +71,29 @@ class Analyser:
         preIntoTableName=re.search(r'into\s*([^\(]*)', stmt).group(1)
         finalIntoTableName=re.sub(' ', '', preIntoTableName.strip())
         dictObj["table_name"]=finalIntoTableName
+        noCnstStmt=re.sub("\'.*?\'","''",stmt)
+        tablesWithAlias=[]
+        if (re.search('.* join .*',noCnstStmt)):
+            tablesWithAlias=re.findall(r'join ([\s\w\d\.\_]+) on',noCnstStmt)
+            if len(tablesWithAlias) > 0:
+                        tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) inner',noCnstStmt)
+                        tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) left',noCnstStmt)
+                        tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) right',noCnstStmt)
+                        tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) ;',noCnstStmt)
+
+        else:
+            tablesWithAlias=TableExtractor.extract_tables(noCnstStmt)
+        fromTables=[]
+        for tableItem in tablesWithAlias:
+            dictFromTable={}
+            preFromTableName=re.search(r'.*\.\s*[^\s]*',tableItem).group()
+            finalFromTableName=re.sub(' ', '', preFromTableName.strip())
+            dictFromTable["table_name"]=finalFromTableName
+            dictFromTable["alias_name"]=tableItem[len(preFromTableName):].strip()
+            fromTables.append(dictFromTable)
+        dictObj["from_table_names"]=fromTables
         return json.dumps(dictObj);
+    
     
     def analyseDelete(self,stmt):
         dictObj={}
