@@ -75,11 +75,13 @@ class Analyser:
         tablesWithAlias=[]
         if (re.search('.* join .*',noCnstStmt)):
             tablesWithAlias=re.findall(r'join ([\s\w\d\.\_]+) on',noCnstStmt)
-            if len(tablesWithAlias) > 0:
-                        tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) inner',noCnstStmt)
-                        tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) left',noCnstStmt)
-                        tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) right',noCnstStmt)
-                        tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) ;',noCnstStmt)
+#             if len(tablesWithAlias) > 0:
+            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) inner',noCnstStmt)
+            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) left',noCnstStmt)
+            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) right',noCnstStmt)
+            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) ;',noCnstStmt)
+            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+)\)',noCnstStmt)
+            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) where',noCnstStmt)
 
         else:
             tablesWithAlias=TableExtractor.extract_tables(noCnstStmt)
