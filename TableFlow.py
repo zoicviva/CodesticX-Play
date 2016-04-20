@@ -40,7 +40,7 @@ class TableFlow:
             line+="</div><div class='clr'></div></div>"
             htmlBody+=line+"\n"
         allTables=list(set(allTableDup))
-        scriptLine="<script> var classes = ["
+        scriptLine="<script> var classes = [" 
         tableCount=0
         for table in allTables:
             scriptLine+="'"+table+"'"
