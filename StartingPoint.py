@@ -46,7 +46,6 @@ def startButtonCallBack():
             file1=OperationCount(fileName).tableWiseCount()
             msg+="Statement Counts : "+file1+"\n"
         else:
-            global file1
             file1=""
             print "not calling table wise count"
         if checkVar2.get()==1:
@@ -54,7 +53,6 @@ def startButtonCallBack():
             file2=TableFlow(fileName).tableFlowGenerator()
             msg+="Table flow : "+file2+"\n"
         else:
-            global file2
             file2=""
             print "not calling table flow"
         
