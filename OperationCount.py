@@ -104,6 +104,6 @@ class OperationCount:
 #             print tables
         htmlFileName=self.tableWiseCountHtml(tableDictArr)
         print "open this in web browser : file://"+os.path.abspath(htmlFileName)
-        return "success"
+        return "file://"+os.path.abspath(htmlFileName)
 # if __name__=="__main__":
 #     OperationCount("dq_base_7th_march.sql").tableWiseCount()

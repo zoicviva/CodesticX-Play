@@ -1,4 +1,5 @@
 import json
+import os
 
 class TableFlow:
     def __init__(self,fileName):
@@ -52,7 +53,7 @@ class TableFlow:
         htmlFile=open("html/TableFlow_"+self.fileName+".html",'w')
         htmlFile.write(htmlBody)
         htmlFile.close()
-        return "sucess"
+        return htmlFile.name
         
     def tableFlowGenerator(self):
         jsonFileContent=open("temp/"+self.jsonFileName,'r');
@@ -92,8 +93,9 @@ class TableFlow:
                         dictObj["right"]=leftTables
                         isNoRightTable=True
                 dictObjArr.append(dictObj)
-        self.tableFlowHTML(dictObjArr)
-        return "success"
+        htmlFileName=self.tableFlowHTML(dictObjArr)
+        print "open this in web browser : file://"+os.path.abspath(htmlFileName)
+        return "file://"+os.path.abspath(htmlFileName)
 
 # if __name__=="__main__":
 #     TableFlow("sp_load_em_carrier_dq_raw_file.sql").tableFlowGenerator()
