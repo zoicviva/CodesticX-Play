@@ -1,3 +1,4 @@
+from DirSetup import DirSetup
 from StatmentSequencer import StatementSequencer
 from UtilitiesCC import UtilitiesCC
 from CommentHandler import CommentHandler
@@ -82,6 +83,7 @@ def quitMainProgram():
 #/Users/tata.swaroop/Desktop/Desktop/DQ/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_cmptn.sql
 #/Users/vivek.keshri/Desktop/DQ_ENHANCEMENT\ PHASE\ 2/dq/DQ_ENHANCEMENT\ PHASE\ 2/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_raw_file.sql
 if __name__=="__main__" :
+    DirSetup.setup()
     logging.basicConfig(filename=userHome+"/CodeCompliance/codecompliancelog.log" , level="INFO",filemode="w")
     top.wm_title("Code Compliance")
     top.update_idletasks()
