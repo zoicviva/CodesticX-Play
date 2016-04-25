@@ -1,10 +1,12 @@
 import re
+import os
 from UtilitiesCC import UtilitiesCC
 
 class StatementSequencer:
     def __init__(self,fileName):
         self.fileName=fileName
-        self.workFilePath="work/"+fileName
+        self.workFilePath=os.path.expanduser('~')+"/CodeCompliance/work/"+fileName
+        self.userHome=os.path.expanduser('~')
         
     def sequenceIt(self):
         file_content = open(self.workFilePath, "r")
@@ -104,7 +106,7 @@ class StatementSequencer:
                         if stmt != '' :
                             stmts.append(re.sub(r"\s+", " ",stmt).strip())
                         stmt=''
-        filePath="temp/"+self.fileName
+        filePath=self.userHome+"/CodeCompliance/temp/"+self.fileName
         file_content.close()
         UtilitiesCC.writeToFile(filePath, stmts)
         return filePath;

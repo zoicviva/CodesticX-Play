@@ -1,5 +1,6 @@
 import json
 import re
+import os
 from TableExtractor import TableExtractor
 
 class Analyser:
@@ -14,16 +15,17 @@ class Analyser:
         self.setSeqNumeber=0
         self.declareSeqNumeber=0
         self.collectSeqNumeber=0
+        self.userHome=os.path.expanduser('~')
         
     def masterJson(self,fileName):
         dictObj={}
-        noCmntFile=open("work/"+fileName,"r")
+        noCmntFile=open(self.userHome+"/CodeCompliance/work/"+fileName,"r")
         fileContent=noCmntFile.read()
         noCmntFile.close()
         preProcName=re.search('replace\s*procedure([^\n]+) \(',fileContent.lower()).group(1)
         finalProcName=re.sub(' ', '', preProcName.strip())
         dictObj["proc_name"]=finalProcName
-        cmntFile=open("orig/"+fileName,"r")
+        cmntFile=open(self.userHome+"/CodeCompliance/orig/"+fileName,"r")
         fileContent=cmntFile.read()
         cmntFile.close()
         noOfSinCmnts=len(re.findall('--.*',fileContent))
@@ -38,12 +40,12 @@ class Analyser:
         dictObj["exception_handled"]=excptn
         lineCount=len(re.findall("\n",fileContent))+1
         dictObj["no_of_lines"]=lineCount
-        stmtFile=open("temp/"+fileName,"r")
+        stmtFile=open(self.userHome+"/CodeCompliance/temp/"+fileName,"r")
         fileContent=stmtFile.read()
         stmtFile.close()
         stmtCount=len(re.findall("\n",fileContent))
         dictObj["no_of_stmts"]=stmtCount
-        jsonFileName="temp/"+fileName+".master.json"
+        jsonFileName=self.userHome+"/CodeCompliance/temp/"+fileName+".master.json"
         toJson=open(jsonFileName,"w")
         toJson.write(json.dumps(dictObj))
         toJson.close()
@@ -185,8 +187,8 @@ class Analyser:
     def startAnalysing(self,fileName):
         #
         self.masterJson(fileName)
-        fileContent=open("temp/"+fileName,"r")
-        jsonFileName="temp/"+fileName+".json"
+        fileContent=open(self.userHome+"/CodeCompliance/temp/"+fileName,"r")
+        jsonFileName=self.userHome+"/CodeCompliance/temp/"+fileName+".json"
         toJson=open(jsonFileName,"w")
         for line in fileContent:
             lowerLine=re.sub("\"", "'",line.lower())

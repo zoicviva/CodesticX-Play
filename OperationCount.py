@@ -4,6 +4,7 @@ class OperationCount:
     def __init__(self,fileName):
         self.jsonFileName=fileName+".json"
         self.fileName=fileName
+        self.userHome=os.path.expanduser('~')
         
     def isTablePresent(self,tableName,tableDictArr):
         index=-1
@@ -37,7 +38,7 @@ class OperationCount:
             totalOfProc["merge"]+=dictObj["merge"]
             totalOfProc["collect"]+=dictObj["collect"]
         htmlBody+="<tr><th>Total</th><th>"+str(totalOfProc["insert"])+"</th><th>"+str(totalOfProc["update"])+"</th><th>"+str(totalOfProc["delete"])+"</th><th>"+str(totalOfProc["merge"])+"</th><th>"+str(totalOfProc["collect"])+"</th></tr>\n"
-        htmlFile=open("html/TableCount_"+self.fileName+".html",'w')
+        htmlFile=open(self.userHome+"/CodeCompliance/html/TableCount_"+self.fileName+".html",'w')
         htmlFile.write(htmlHeader)
         htmlFile.write(htmlBody)
         htmlFile.write(htmlFooter)
@@ -45,7 +46,7 @@ class OperationCount:
         return htmlFile.name
     
     def tableWiseCount(self):
-        jsonFileContent=open("temp/"+self.jsonFileName,'r');
+        jsonFileContent=open(self.userHome+"/CodeCompliance/temp/"+self.jsonFileName,'r');
         jsonObjArr=[]
         for line in jsonFileContent:
             jsonObjArr.append(json.loads(line))
@@ -103,7 +104,7 @@ class OperationCount:
 #         for tables in tableDictArr:
 #             print tables
         htmlFileName=self.tableWiseCountHtml(tableDictArr)
-        print "open this in web browser : file://"+os.path.abspath(htmlFileName)
+#         print "open this in web browser : file://"+os.path.abspath(htmlFileName)
         return "file://"+os.path.abspath(htmlFileName)
 # if __name__=="__main__":
 #     OperationCount("dq_base_7th_march.sql").tableWiseCount()

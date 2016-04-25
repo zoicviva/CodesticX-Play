@@ -9,12 +9,15 @@ import Tkinter
 import tkMessageBox
 from tkFileDialog import askopenfilename
 import webbrowser
+import logging
+import os
 
 top = Tkinter.Tk()
 checkVar1 = IntVar()
 checkVar2 = IntVar()
 file1=""
 file2=""
+userHome=os.path.expanduser('~')
 
 def openHtmlInBrowser():
     webbrowser.open_new(file1)
@@ -30,9 +33,10 @@ def startButtonCallBack():
         filePannel.withdraw()
         fileNameSelected=askopenfilename() # show an "Open" dialog box and return the path to the selected file
         filePannel.destroy()
+        logging.info("starting to copy the selected file to orig folder")
         fileName=UtilitiesCC.copyFileToOrig(fileNameSelected)
         fileContent=CommentHandler(fileName).removeComments()
-        UtilitiesCC.writeTextToFile("work", fileName, fileContent)
+        UtilitiesCC.writeTextToFile(userHome+"/CodeCompliance/work", fileName, fileContent)
         fileObj=StatementSequencer(fileName)
         sequencedfilePath=fileObj.sequenceIt()
 #         print "sequenced file present at : "+sequencedfilePath+" inside project folder"
@@ -78,6 +82,7 @@ def quitMainProgram():
 #/Users/tata.swaroop/Desktop/Desktop/DQ/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_cmptn.sql
 #/Users/vivek.keshri/Desktop/DQ_ENHANCEMENT\ PHASE\ 2/dq/DQ_ENHANCEMENT\ PHASE\ 2/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_raw_file.sql
 if __name__=="__main__" :
+    logging.basicConfig(filename=userHome+"/CodeCompliance/codecompliancelog.log" , level="INFO",filemode="w")
     top.wm_title("Code Compliance")
     top.update_idletasks()
     top.resizable(width=FALSE, height=FALSE)

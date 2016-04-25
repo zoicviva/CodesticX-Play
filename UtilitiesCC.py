@@ -1,5 +1,7 @@
 from shutil import copy2
 import ntpath
+import os
+import logging
 class UtilitiesCC:
     @staticmethod 
     def writeToFile(filePath,contentList):
@@ -10,13 +12,14 @@ class UtilitiesCC:
     
     @staticmethod
     def copyFileToWork(filePath):
-        copy2(filePath, "work/")
+        copy2(filePath, os.path.expanduser('~')+"/CodeCompliance/work/")
         fileName=ntpath.basename(filePath)
         return fileName
     
     @staticmethod
     def copyFileToOrig(filePath):
-        copy2(filePath, "orig/")
+        logging.info("copying "+filePath+" to "+os.getcwd()+"orig")
+        copy2(filePath, os.path.expanduser('~')+"/CodeCompliance/orig/")
         fileName=ntpath.basename(filePath)
         return fileName
     

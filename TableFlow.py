@@ -5,12 +5,14 @@ class TableFlow:
     def __init__(self,fileName):
         self.jsonFileName=fileName+".json"
         self.fileName=fileName      
+        self.userHome=os.path.expanduser('~')
     
     def tableFlowHTML(self,dictObjArr):
-        htmlHeadFile=open("html/template/TableFlowHead.txt","r")
+        
+        htmlHeadFile=open(self.userHome+"/CodeCompliance/html/template/TableFlowHead.txt","r")
         htmlHead=htmlHeadFile.read()
         htmlHeadFile.close()
-        htmlTailFile=open("html/template/TableFlowTail.txt","r")
+        htmlTailFile=open(self.userHome+"/CodeCompliance/html/template/TableFlowTail.txt","r")
         htmlTail=htmlTailFile.read()
         htmlTailFile.close()
         htmlBody=htmlHead
@@ -50,13 +52,13 @@ class TableFlow:
         scriptLine+="];</script>"
         htmlBody+=scriptLine
         htmlBody+=htmlTail
-        htmlFile=open("html/TableFlow_"+self.fileName+".html",'w')
+        htmlFile=open(self.userHome+"/CodeCompliance/html/TableFlow_"+self.fileName+".html",'w')
         htmlFile.write(htmlBody)
         htmlFile.close()
         return htmlFile.name
         
     def tableFlowGenerator(self):
-        jsonFileContent=open("temp/"+self.jsonFileName,'r');
+        jsonFileContent=open(self.userHome+"/CodeCompliance/temp/"+self.jsonFileName,'r');
         jsonObjArr=[]
         for line in jsonFileContent:
             jsonObjArr.append(json.loads(line))
@@ -94,7 +96,7 @@ class TableFlow:
                         isNoRightTable=True
                 dictObjArr.append(dictObj)
         htmlFileName=self.tableFlowHTML(dictObjArr)
-        print "open this in web browser : file://"+os.path.abspath(htmlFileName)
+#         print "open this in web browser : file://"+os.path.abspath(htmlFileName)
         return "file://"+os.path.abspath(htmlFileName)
 
 # if __name__=="__main__":
