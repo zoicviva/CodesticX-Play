@@ -13,6 +13,7 @@ import webbrowser
 import logging
 import os
 
+
 top = Tkinter.Tk()
 resultBox=Tkinter.Tk()
 checkVar1 = IntVar()
