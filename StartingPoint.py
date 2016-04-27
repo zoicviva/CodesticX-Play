@@ -14,6 +14,7 @@ import logging
 import os
 
 top = Tkinter.Tk()
+resultBox=Tkinter.Tk()
 checkVar1 = IntVar()
 checkVar2 = IntVar()
 file1=""
@@ -23,6 +24,7 @@ userHome=os.path.expanduser('~')
 def openHtmlInBrowser():
     webbrowser.open_new(file1)
     webbrowser.open_new_tab(file2)
+    resultBox.destroy()
     return "Success"
 
 def startButtonCallBack():
@@ -61,7 +63,7 @@ def startButtonCallBack():
             file2=""
             print "not calling table flow"
         
-        resultBox=Tkinter.Tk()
+        
         resultBox.wm_title("Code Compliance - Success!")
         w = 590 # width for the Tk root
         h = 220 # height for the Tk root

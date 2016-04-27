@@ -1,6 +1,7 @@
 import json
 import re
 import os
+import logging
 from TableExtractor import TableExtractor
 
 class Analyser:
@@ -49,6 +50,107 @@ class Analyser:
         toJson=open(jsonFileName,"w")
         toJson.write(json.dumps(dictObj))
         toJson.close()
+    
+    def matches(self,line, opendelim='(', closedelim=')'):
+        stack = []
+        for m in re.finditer(r'[{}{}]'.format(opendelim, closedelim), line):
+            pos = m.start()
+            c = line[pos]
+            if c == opendelim:
+                stack.append(pos+1)
+
+            elif c == closedelim:
+                if len(stack) > 0:
+                    prevpos = stack.pop()
+                    yield (prevpos, pos, len(stack))
+                else:
+                    print("encountered extraneous closing quote at pos {}: '{}'".format(pos, line[pos:] ))
+                    pass
+
+        if len(stack) > 0:
+            for pos in stack:
+                print("expecting closing quote to match open quote starting at: '{}'".format(line[pos-1:]))
+    
+    def replaceMacthes(self,line):
+        matches_arr=[]
+        rplcd_arr=[]
+        maxLevel=0
+        total_len=len(line)
+        for openpos, closepos, level in self.matches(line):
+            if(maxLevel<=level):
+                maxLevel=level
+            query=line[openpos:closepos]
+            query="~"*(openpos)+query+"~"*(total_len-closepos)
+            matches_arr.append({"query":query,"level":level,"start":openpos,"end":closepos})
+    
+        for i in range(0,maxLevel):
+            for baseItem in matches_arr:
+                if(baseItem["level"]==i):
+                    mainQry=baseItem["query"]
+                    replacedQry=""
+                    for replacer in matches_arr:
+                        if replacer["level"]==i+1:
+                            between_len=replacer["end"]-replacer["start"]
+                            between_str="~"*between_len
+                            replacedQry=mainQry[0:replacer["start"]]+between_str+mainQry[replacer["end"]:]
+                            mainQry=replacedQry
+                        else:
+                            pass
+                    rplcd_arr.append({"query":replacedQry,"level":baseItem["level"],"start":baseItem["start"] ,"end":baseItem["end"]})
+                else: 
+                    pass
+        for item in matches_arr:
+            if item["level"]==maxLevel :
+                rplcd_arr.append(item)
+        return rplcd_arr
+    
+    def getTablesFromSelect(self,line):
+        rplcd_arr=self.replaceMacthes(line)
+        tables=[]
+        for i in rplcd_arr:
+            noTild=re.sub(r'~+','',i["query"].lower())
+            if re.search('^\s*select',noTild):
+                noBraces=re.sub(r'\(\s*\)',' ~ ',noTild)
+                splittedArr=re.sub('\sunion all\s|\sintersect\s|\sminus\s|\sunion\s',";;",noBraces).split(';;')
+                for item in splittedArr:
+                    noWhere=re.sub(r'select .* from','from',item)
+                    noWhere=re.sub(r' where .*| group .*| qualify .*| having .*| order .*',';',noWhere)
+                    
+                    tables+=re.findall(r'from\s*([\w\d\.\_\$]+)',noWhere)
+                    tables+=re.findall(r'join\s*([\w\d\.\_\$]+)',noWhere)
+                    tables+=re.findall(r',\s*([\w\d\.\_\$]+)',noWhere)
+            
+        return tables
+    
+    def getLevelZeroQuery(self,line):
+        matches_arr=[]
+        rplcd_arr=[]
+        maxLevel=0
+        total_len=len(line)
+        for openpos, closepos, level in self.matches(line):
+            if(maxLevel<=level):
+                maxLevel=level
+            query=line[openpos:closepos]
+            query="~"*(openpos)+query+"~"*(total_len-closepos)
+            matches_arr.append({"query":query,"level":level,"start":openpos,"end":closepos})
+    
+        for i in range(0,1):
+            for baseItem in matches_arr:
+                if(baseItem["level"]==i):
+                    mainQry=baseItem["query"]
+                    replacedQry=""
+                    for replacer in matches_arr:
+                        if replacer["level"]==i+1:
+                            between_len=replacer["end"]-replacer["start"]
+                            between_str="~"*between_len
+                            replacedQry=mainQry[0:replacer["start"]]+between_str+mainQry[replacer["end"]:]
+                            mainQry=replacedQry
+                        else:
+                            pass
+                    rplcd_arr.append({"query":replacedQry,"level":baseItem["level"],"start":baseItem["start"] ,"end":baseItem["end"]})
+                else: 
+                    pass
+        return rplcd_arr.join()
         
     def analyseCall(self,stmt):
         dictObj={}
@@ -56,12 +158,17 @@ class Analyser:
         dictObj["subtype"]="call"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.callSeqNumeber
-        preProcName=re.search(r'call \s*([^\n]+) \(', stmt).group(1)
-        finalProcName=re.sub(' ', '', preProcName.strip())
-        dictObj["proc_name"]=finalProcName
-        preArgStr=re.search(r'\(\s*([^\n]+)\)', stmt).group(1)
-        finalArgList=re.sub(' ', '', preArgStr.strip()).split(',')
-        dictObj["args"]=finalArgList
+        try:
+            preProcName=re.search(r'call \s*([^\n]+) \(', stmt).group(1)
+            finalProcName=re.sub(' ', '', preProcName.strip())
+            dictObj["proc_name"]=finalProcName
+            preArgStr=re.search(r'\(\s*([^\n]+)\)', stmt).group(1)
+            finalArgList=re.sub(' ', '', preArgStr.strip()).split(',')
+            dictObj["args"]=finalArgList
+        except:
+            dictObj["proc_name"]=""
+            dictObj["args"]=""
+            logging.error("analyseCall - "+stmt)
         return json.dumps(dictObj);
     
     def analyseInsert(self,stmt):
@@ -70,32 +177,23 @@ class Analyser:
         dictObj["subtype"]="insert"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.insertSeqNumeber
-        preIntoTableName=re.search(r'into\s*([^\(]*)', stmt).group(1)
-        finalIntoTableName=re.sub(' ', '', preIntoTableName.strip())
-        dictObj["table_name"]=finalIntoTableName
-        noCnstStmt=re.sub("\'.*?\'","''",stmt)
-        tablesWithAlias=[]
-        if (re.search('.* join .*',noCnstStmt)):
-            tablesWithAlias=re.findall(r'join ([\s\w\d\.\_]+) on',noCnstStmt)
-#             if len(tablesWithAlias) > 0:
-            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) inner',noCnstStmt)
-            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) left',noCnstStmt)
-            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) right',noCnstStmt)
-            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) ;',noCnstStmt)
-            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+)\)',noCnstStmt)
-            tablesWithAlias+=re.findall(r'from ([\s\w\d\.\_]+) where',noCnstStmt)
-
-        else:
-            tablesWithAlias=TableExtractor.extract_tables(noCnstStmt)
-        fromTables=[]
-        for tableItem in tablesWithAlias:
-            dictFromTable={}
-            preFromTableName=re.search(r'.*\.\s*[^\s]*',tableItem).group()
-            finalFromTableName=re.sub(' ', '', preFromTableName.strip())
-            dictFromTable["table_name"]=finalFromTableName
-            dictFromTable["alias_name"]=tableItem[len(preFromTableName):].strip()
-            fromTables.append(dictFromTable)
-        dictObj["from_table_names"]=fromTables
+        try:
+            preIntoTableName=re.search(r'into\s*([^\(]*)', stmt).group(1)
+            finalIntoTableName=re.sub(' ', '', preIntoTableName.strip())
+            dictObj["table_name"]=finalIntoTableName
+            noCnstStmt=re.sub("\'.*?\'","''",stmt)
+            line=""
+            if re.search(r'insert\s*into\s*[\s\w\d\.\_\$]+\s*\(',stmt):
+                line=re.sub(r'insert\s*into\s*[\s\w\d\.\_\$]+\s*\(.*?\)','',stmt)
+            else:
+                line=stmt
+            line="("+line[line.find("select"):].strip()+")"
+            fromTables=self.getTablesFromSelect(line)
+            dictObj["from_table_names"]=fromTables
+        except:
+            dictObj["table_name"]=""
+            dictObj["from_table_names"]=""
+            logging.error("analyseInsert - "+stmt)
         return json.dumps(dictObj);
     
     
@@ -105,12 +203,17 @@ class Analyser:
         dictObj["subtype"]="delete"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.deleteSeqNumeber
-        to_table_stmt=re.sub(' where.*', ' ', stmt)
-        preTableName1=re.search(r'delete\s*(.*?from){0,1}([^,;]*)', to_table_stmt).group(2).strip()
-        preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
-        finalTableName=re.sub(' ', '', preTableName2.strip())
-        dictObj["table_name"]=finalTableName
-        dictObj["alias_name"]=preTableName1[len(preTableName2):].strip()
+        try:
+            to_table_stmt=re.sub(' where.*', ' ', stmt)
+            preTableName1=re.search(r'delete\s*(.*?from){0,1}([^,;]*)', to_table_stmt).group(2).strip()
+            preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
+            finalTableName=re.sub(' ', '', preTableName2.strip())
+            dictObj["table_name"]=finalTableName
+            dictObj["alias_name"]=preTableName1[len(preTableName2):].strip()
+        except:
+            dictObj["table_name"]=""
+            dictObj["alias_name"]=""
+            logging.error("analyseDelete - "+stmt)
         return json.dumps(dictObj);
     
     def analyseMerge(self,stmt):
@@ -119,11 +222,16 @@ class Analyser:
         dictObj["subtype"]="merge"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.mergeSeqNumeber
-        preTableName1=re.search(r'into(.*?)using', stmt).group(1)
-        preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
-        finalTableName=re.sub(' ', '', preTableName2.strip())
-        dictObj["table_name"]=finalTableName
-        dictObj["alias_name"]=preTableName1[len(preTableName2):].strip()
+        try:
+            preTableName1=re.search(r'into(.*?)using', stmt).group(1)
+            preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
+            finalTableName=re.sub(' ', '', preTableName2.strip())
+            dictObj["table_name"]=finalTableName
+            dictObj["alias_name"]=preTableName1[len(preTableName2):].strip()
+        except:
+            dictObj["table_name"]=""
+            dictObj["alias_name"]=""
+            logging.error("analyseMerge - "+stmt)
         return json.dumps(dictObj);
     
     def analyseUpdate(self,stmt):
@@ -132,12 +240,17 @@ class Analyser:
         dictObj["subtype"]="update"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.updateSeqNumeber
-        to_table_stmt=re.sub(' set.*', ' ', stmt)
-        preTableName1=re.search(r'update\s*(.*?from){0,1}([^,;]*)', to_table_stmt).group(2).strip()
-        preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
-        finalTableName=re.sub(' ', '', preTableName2.strip())
-        dictObj["table_name"]=finalTableName
-        dictObj["alias_name"]=preTableName1[len(preTableName2):].strip()
+        try:
+            to_table_stmt=re.sub(' set.*', ' ', stmt)
+            preTableName1=re.search(r'update\s*(.*?from){0,1}([^,;]*)', to_table_stmt).group(2).strip()
+            preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
+            finalTableName=re.sub(' ', '', preTableName2.strip())
+            dictObj["table_name"]=finalTableName
+            dictObj["alias_name"]=preTableName1[len(preTableName2):].strip()
+        except:
+            dictObj["table_name"]=""
+            dictObj["alias_name"]=""
+            logging.error("analyseUpdate - "+stmt)
         return json.dumps(dictObj);
     
     def analyseSelect(self,stmt):
@@ -164,14 +277,19 @@ class Analyser:
         dictObj["subtype"]="collect"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.collectSeqNumeber
-        preTableName1=re.search(r'collect\s*stats\s*on\s*([^;]*)',stmt).group(1)
-        preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
-        finalTableName=re.sub(' ', '', preTableName2.strip())
-        dictObj["table_name"]=finalTableName
-        if(len(preTableName1.strip())==len(preTableName2.strip())):
-            dictObj["is_table_level"]="Y"
-        else :
-            dictObj["is_table_level"]="N"
+        try:
+            preTableName=re.search(r"collect\s*(stats|statistics){1}\s*(on){0,1}(.*);", stmt).group(3).strip().split()
+            finalTableName=preTableName[0]
+            dictObj["table_name"]=finalTableName
+            if(len(preTableName)>1):
+                dictObj["is_table_level"]="N"
+            else :
+                dictObj["is_table_level"]="Y"
+        except:
+            dictObj["table_name"]=""
+            dictObj["is_table_level"]=""
+            logging.error("analyseCollect - "+stmt)
+            
         return json.dumps(dictObj);
     
     def analyseSet(self,stmt):
@@ -180,8 +298,13 @@ class Analyser:
         dictObj["subtype"]="set"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.setSeqNumeber
-        dictObj["variable"]=re.search(r'set \s*([^\n]+)=', stmt).group(1).strip()
-        dictObj["value"]=re.search(r'=\s*([^\n]+);', stmt).group(1).strip()
+        try:
+            dictObj["variable"]=re.search(r'set \s*([^\n]+)=', stmt).group(1).strip()
+            dictObj["value"]=re.search(r'=\s*([^\n]+);', stmt).group(1).strip()
+        except:
+            dictObj["variable"]=""
+            dictObj["value"]=""
+            logging.error("analyseSet - "+stmt)
         return json.dumps(dictObj);
     
     def startAnalysing(self,fileName):
@@ -192,6 +315,7 @@ class Analyser:
         toJson=open(jsonFileName,"w")
         for line in fileContent:
             lowerLine=re.sub("\"", "'",line.lower())
+            lowerLine=re.sub("\s*\.\s*", ".",lowerLine)
             self.procSeqNumeber+=1
             firstWord=lowerLine.strip().split()[0]
             if(firstWord=='insert'):

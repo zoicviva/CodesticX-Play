@@ -69,10 +69,11 @@ class TableFlow:
             if(jsonObj["subtype"]=="insert"):
                 dictObj={}
                 dictObj["center"]=jsonObj["table_name"]
-                fromTablesWithAlias=jsonObj["from_table_names"]
-                fromTables=[]
-                for fromTableObj in fromTablesWithAlias:
-                    fromTables.append(fromTableObj["table_name"])
+#                 fromTablesWithAlias=jsonObj["from_table_names"]
+#                 fromTables=[]
+#                 for fromTableObj in fromTablesWithAlias:
+#                     fromTables.append(fromTableObj["table_name"])
+                fromTables=jsonObj["from_table_names"]
                 fromTables=sorted(fromTables, key=len)
                 leftTables=[]
                 rightTables=[]
