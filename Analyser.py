@@ -2,7 +2,7 @@ import json
 import re
 import os
 import logging
-from TableExtractor import TableExtractor
+from TableExtractor import TableExtractor 
 
 class Analyser:
     def __init__(self):
