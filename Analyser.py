@@ -158,6 +158,7 @@ class Analyser:
         dictObj["subtype"]="call"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.callSeqNumeber
+        dictObj["statement"]=stmt
         try:
             preProcName=re.search(r'call \s*([^\n]+) \(', stmt).group(1)
             finalProcName=re.sub(' ', '', preProcName.strip())
@@ -177,6 +178,7 @@ class Analyser:
         dictObj["subtype"]="insert"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.insertSeqNumeber
+        dictObj["statement"]=stmt
         try:
             preIntoTableName=re.search(r'into\s*([^\(]*)', stmt).group(1)
             finalIntoTableName=re.sub(' ', '', preIntoTableName.strip())
@@ -203,6 +205,7 @@ class Analyser:
         dictObj["subtype"]="delete"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.deleteSeqNumeber
+        dictObj["statement"]=stmt
         try:
             to_table_stmt=re.sub(' where.*', ' ', stmt)
             preTableName1=re.search(r'delete\s*(.*?from){0,1}([^,;]*)', to_table_stmt).group(2).strip()
@@ -222,6 +225,7 @@ class Analyser:
         dictObj["subtype"]="merge"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.mergeSeqNumeber
+        dictObj["statement"]=stmt
         try:
             preTableName1=re.search(r'into(.*?)using', stmt).group(1)
             preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
@@ -240,6 +244,7 @@ class Analyser:
         dictObj["subtype"]="update"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.updateSeqNumeber
+        dictObj["statement"]=stmt
         try:
             to_table_stmt=re.sub(' set.*', ' ', stmt)
             preTableName1=re.search(r'update\s*(.*?from){0,1}([^,;]*)', to_table_stmt).group(2).strip()
@@ -259,6 +264,7 @@ class Analyser:
         dictObj["subtype"]="select"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.selectSeqNumeber
+        dictObj["statement"]=stmt
         
         return json.dumps(dictObj);
     
@@ -268,6 +274,7 @@ class Analyser:
         dictObj["subtype"]="declare"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.declareSeqNumeber
+        dictObj["statement"]=stmt
         
         return json.dumps(dictObj);
     
@@ -277,6 +284,7 @@ class Analyser:
         dictObj["subtype"]="collect"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.collectSeqNumeber
+        dictObj["statement"]=stmt
         try:
             preTableName=re.search(r"collect\s*(stats|statistics){1}\s*(on){0,1}(.*);", stmt).group(3).strip().split()
             finalTableName=preTableName[0]
@@ -298,6 +306,7 @@ class Analyser:
         dictObj["subtype"]="set"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.setSeqNumeber
+        dictObj["statement"]=stmt
         try:
             dictObj["variable"]=re.search(r'set \s*([^\n]+)=', stmt).group(1).strip()
             dictObj["value"]=re.search(r'=\s*([^\n]+);', stmt).group(1).strip()
