@@ -101,4 +101,4 @@ class TableFlow:
         return "file://"+os.path.abspath(htmlFileName)
 
 # if __name__=="__main__":
-#     TableFlow("sp_load_em_carrier_dq_raw_file.sql").tableFlowGenerator()
+#     TableFlow("sp_load_em_carrier_dq_raw_file.sql").tableFlowGenerator() 
