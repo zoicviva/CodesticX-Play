@@ -26,6 +26,15 @@ class Analyser:
         preProcName=re.search('replace\s*procedure([^\n]+) \(',fileContent.lower()).group(1)
         finalProcName=re.sub(' ', '', preProcName.strip())
         dictObj["proc_name"]=finalProcName
+        dictObj["inserts"]=self.insertSeqNumeber
+        dictObj["selects"]=self.selectSeqNumeber
+        dictObj["updates"]=self.updateSeqNumeber
+        dictObj["deletes"]=self.deleteSeqNumeber
+        dictObj["merges"]=self.mergeSeqNumeber
+        dictObj["calls"]=self.callSeqNumeber
+        dictObj["sets"]=self.setSeqNumeber
+        dictObj["declares"]=self.declareSeqNumeber
+        dictObj["collects"]=self.collectSeqNumeber
         cmntFile=open(self.userHome+"/CodeCompliance/orig/"+fileName,"r")
         fileContent=cmntFile.read()
         cmntFile.close()
@@ -317,8 +326,6 @@ class Analyser:
         return json.dumps(dictObj);
     
     def startAnalysing(self,fileName):
-        #
-        self.masterJson(fileName)
         fileContent=open(self.userHome+"/CodeCompliance/temp/"+fileName,"r")
         jsonFileName=self.userHome+"/CodeCompliance/temp/"+fileName+".json"
         toJson=open(jsonFileName,"w")
@@ -354,8 +361,7 @@ class Analyser:
             elif(firstWord=='collect'):
                 self.collectSeqNumeber+=1
                 toJson.write(self.analyseCollect(lowerLine)+"\n")
-            
         fileContent.close()
         toJson.close()
-            
+        self.masterJson(fileName)
         return "success"

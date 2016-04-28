@@ -3,6 +3,7 @@ import os
 class OperationCount:
     def __init__(self,fileName):
         self.jsonFileName=fileName+".json"
+        self.masterJsonFileName=fileName+".master.json"
         self.fileName=fileName
         self.userHome=os.path.expanduser('~')
         
@@ -15,20 +16,22 @@ class OperationCount:
                 break
         return index
     def tableWiseCountHtml(self,tableDictArr):
+        masterJsonFile=open(self.userHome+"/CodeCompliance/temp/"+self.masterJsonFileName,'r');
+        masterJsonFileContent=masterJsonFile.read()
+        masterJsonFile.close()
+        masterJsonDict=json.loads(masterJsonFileContent)
         totalOfProc={'insert':0,'update':0,'delete':0,'merge':0,'collect':0}
-        htmlHeader='''<html><head><style>
-        body{background:#f1f1f1}
-        #center{margin:auto;width:50%;}
-        table { color: #333;font-family: Helvetica, Arial, sans-serif;width: 640px; border: 1px solid black; border-radius: 10px;
-        box-shadow: 0px 0px 5px #888888; }
-        td, th { border: 1px solid transparent;height: 30px; transition: all 0.3s;}
-        th {background: #DFDFDF;font-weight: bold;}
-        td {background: #FAFAFA;text-align: center;}
-        tr:nth-child(even) td { background: #F1F1F1; }   
-        tr:nth-child(odd) td { background: #FEFEFE; }  
-        tr td:hover { background: #666; color: #FFF; }
-        </style></head><body><div id="center"><table>'''
-        htmlFooter="</table><div></body></html>"
+        
+        htmlHeadFile=open(self.userHome+"/CodeCompliance/html/template/TableCountHead.txt","r")
+        htmlHeader=htmlHeadFile.read()
+        htmlHeadFile.close()
+        htmlMiddleFile=open(self.userHome+"/CodeCompliance/html/template/TableCountMiddle.txt","r")
+        htmlMiddle=htmlMiddleFile.read()
+        htmlMiddleFile.close()
+        htmlTailFile=open(self.userHome+"/CodeCompliance/html/template/TableCountTail.txt","r")
+        htmlFooter=htmlTailFile.read()
+        htmlTailFile.close()
+        
         htmlBody="<tr><th>Table Name</th><th>Inserts</th><th>Updates</th><th>Deletes</th><th>Merges</th><th>Stats</th></tr>"
         for dictObj in tableDictArr:
             htmlBody+="<tr><td>"+dictObj["tableName"]+"</td><td>"+str(dictObj["insert"])+"</td><td>"+str(dictObj["update"])+"</td><td>"+str(dictObj["delete"])+"</td><td>"+str(dictObj["merge"])+"</td><td>"+str(dictObj["collect"])+"</td></tr>\n"
@@ -38,8 +41,21 @@ class OperationCount:
             totalOfProc["merge"]+=dictObj["merge"]
             totalOfProc["collect"]+=dictObj["collect"]
         htmlBody+="<tr><th>Total</th><th>"+str(totalOfProc["insert"])+"</th><th>"+str(totalOfProc["update"])+"</th><th>"+str(totalOfProc["delete"])+"</th><th>"+str(totalOfProc["merge"])+"</th><th>"+str(totalOfProc["collect"])+"</th></tr>\n"
+        bubbleData="["
+        bubbleData+="{text: 'Inserts', count: "+str(masterJsonDict["inserts"])+"},"
+        bubbleData+="{text: 'Deletes', count: "+str(masterJsonDict["deletes"])+"},"
+        bubbleData+="{text: 'Updates', count: "+str(masterJsonDict["updates"])+"},"
+        bubbleData+="{text: 'Merges', count: "+str(masterJsonDict["merges"])+"},"
+        bubbleData+="{text: 'Tables', count: "+str(len(tableDictArr))+"},"
+        bubbleData+="{text: 'Statements', count: "+str(masterJsonDict["no_of_stmts"])+"},"
+        bubbleData+="{text: 'Comments', count: "+str(masterJsonDict["no_of_cmnts"])+"},"
+        bubbleData+="{text: 'Lines', count: "+str(masterJsonDict["no_of_lines"])+"}"
+        bubbleData+="]"
+        
         htmlFile=open(self.userHome+"/CodeCompliance/html/TableCount_"+self.fileName+".html",'w')
         htmlFile.write(htmlHeader)
+        htmlFile.write(bubbleData)
+        htmlFile.write(htmlMiddle)
         htmlFile.write(htmlBody)
         htmlFile.write(htmlFooter)
         htmlFile.close()
