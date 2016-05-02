@@ -2,6 +2,7 @@ import json
 import re
 import os
 import logging
+import sys
 from TableExtractor import TableExtractor 
 
 class Analyser:
@@ -132,34 +133,24 @@ class Analyser:
         return tables
     
     def getLevelZeroQuery(self,line):
-        matches_arr=[]
-        rplcd_arr=[]
-        maxLevel=0
-        total_len=len(line)
-        for openpos, closepos, level in self.matches(line):
-            if(maxLevel<=level):
-                maxLevel=level
-            query=line[openpos:closepos]
-            query="~"*(openpos)+query+"~"*(total_len-closepos)
-            matches_arr.append({"query":query,"level":level,"start":openpos,"end":closepos})
+        stack=[]
+        result=""
     
-        for i in range(0,1):
-            for baseItem in matches_arr:
-                if(baseItem["level"]==i):
-                    mainQry=baseItem["query"]
-                    replacedQry=""
-                    for replacer in matches_arr:
-                        if replacer["level"]==i+1:
-                            between_len=replacer["end"]-replacer["start"]
-                            between_str="~"*between_len
-                            replacedQry=mainQry[0:replacer["start"]]+between_str+mainQry[replacer["end"]:]
-                            mainQry=replacedQry
-                        else:
-                            pass
-                    rplcd_arr.append({"query":replacedQry,"level":baseItem["level"],"start":baseItem["start"] ,"end":baseItem["end"]})
-                else: 
-                    pass
-        return rplcd_arr.join()
+        for i in line:
+            if i == '(':
+                stack.append(i)
+            if len(stack) == 1:
+                if i == '(' or i == ')':
+                    result+='~'
+                else:
+                    result+=i
+            else:
+                result+='~'
+            if i == ')':
+                stack.pop()
+        result=re.sub( r"~+","~",result)
+        return result
+
         
     def analyseCall(self,stmt):
         dictObj={}
@@ -254,17 +245,41 @@ class Analyser:
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.updateSeqNumeber
         dictObj["statement"]=stmt
+        updateToTableName=""
+        updateFromTableNames=[]
         try:
-            to_table_stmt=re.sub(' set.*', ' ', stmt)
-            preTableName1=re.search(r'update\s*(.*?from){0,1}([^,;]*)', to_table_stmt).group(2).strip()
-            preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
-            finalTableName=re.sub(' ', '', preTableName2.strip())
-            dictObj["table_name"]=finalTableName
-            dictObj["alias_name"]=preTableName1[len(preTableName2):].strip()
+            if re.search(r"update .*? from.*? set", stmt):
+                fromLine="(select "+re.search(r"(from .*) set ", stmt).group(1)+")" # adding select here is mandatory to re utilize getTablesFromSelect
+                tableOrAlias=re.search(r"update (.*?) from", stmt).group(1)
+                lvlzero= self.getLevelZeroQuery(fromLine).strip("~")
+                updateFromTableNames=self.getTablesFromSelect(fromLine)
+                tableWithAlias=[]
+                tableWithAlias+=re.findall("from ([\s\w\d\.\_\$]+)", lvlzero)
+                tableWithAlias+=re.findall(",([\s\w\d\.\_\$]+)", lvlzero)
+                lvlZeroTtables=[]
+                for table in tableWithAlias :
+                    removedAs=table.replace(" as "," ").strip()
+                    if removedAs!='':
+                        tableName = re.search(r"([^\s]+)", removedAs).group(1)
+                        aliasName = removedAs[len(tableName):].strip()
+                        lvlZeroTtables.append({"table_name":tableName.strip(),"alias":aliasName})
+                
+                for item in lvlZeroTtables:
+                    if item["alias"]==tableOrAlias:
+                        updateToTableName=item["table_name"]
+                if updateToTableName=="":
+                    updateToTableName=tableOrAlias
+                try:
+                    updateFromTableNames.remove(updateToTableName)
+                except:
+                    pass            
+            else:
+                updateToTableName=re.search(r"update\s*([^\s]+)", stmt).group(1)
+        
         except:
-            dictObj["table_name"]=""
-            dictObj["alias_name"]=""
-            logging.error("analyseUpdate - "+stmt)
+            logging.error("analyseUpdate - "+stmt)   
+        dictObj["table_name"]=updateToTableName
+        dictObj["from_table_names"]=updateFromTableNames
         return json.dumps(dictObj);
     
     def analyseSelect(self,stmt):
