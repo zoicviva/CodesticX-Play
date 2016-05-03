@@ -205,19 +205,60 @@ class Analyser:
         dictObj["subtype"]="delete"
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.deleteSeqNumeber
-        dictObj["statement"]=stmt
+        dictObj["statement"]=stmt    
+        delToTableName=""
+        delFromTableNames=[]
+        levZeroLine=self.getLevelZeroQuery("("+stmt+")").strip("~")
+        levZeroLine=re.sub(r" where .*","",levZeroLine)
         try:
-            to_table_stmt=re.sub(' where.*', ' ', stmt)
-            preTableName1=re.search(r'delete\s*(.*?from){0,1}([^,;]*)', to_table_stmt).group(2).strip()
-            preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
-            finalTableName=re.sub(' ', '', preTableName2.strip())
-            dictObj["table_name"]=finalTableName
-            dictObj["alias_name"]=preTableName1[len(preTableName2):].strip()
+            if re.search(r"delete\s*([\.\$\w\d]+)\s*from", levZeroLine):
+                fromLine="(select "+re.search(r"(from .*)", stmt).group(1)+")"
+                tableOrAlias=re.search(r"delete (.*?) from", stmt).group(1)
+                delFromTableNames=self.getTablesFromSelect(fromLine)
+                tableWithAlias=[]
+                tableWithAlias+=re.findall("from\s+([\w\d\.\s\_\$]+)", levZeroLine)
+                tableWithAlias+=re.findall(",([\s\w\d\.\_\$]+)", levZeroLine)
+                lvlZeroTtables=[]
+                for table in tableWithAlias :
+                    removedAs=table.replace(" as "," ").strip()
+                    if removedAs!='':
+                        tableName = re.search(r"([^\s]+)", removedAs).group(1)
+                        aliasName = removedAs[len(tableName):].strip()
+                        lvlZeroTtables.append({"table_name":tableName.strip(),"alias":aliasName})
+                print lvlZeroTtables
+                
+                for item in lvlZeroTtables:
+                    if item["alias"]==tableOrAlias:
+                        delToTableName=item["table_name"]
+                if delToTableName=="":
+                    delToTableName=tableOrAlias
+                try:
+                    delFromTableNames.remove(delToTableName)
+                except:
+                    pass
+             
+            elif re.search(r"delete\s*from",levZeroLine):
+                delToTableName=re.search("from\s+([\w\d\.\_\$]+)", levZeroLine).group(1)
+                fromLine="(select "+re.search(r"(from .*)", stmt).group(1)+")"
+                delFromTableNames=self.getTablesFromSelect(fromLine)
+                try:
+                    delFromTableNames.remove(delToTableName)
+                except:
+                    pass
+                    
+            else:
+                delToTableName=re.search(r"delete\s+([\w\d\.\_\$]+)", stmt).group(1)
+                fromLine="( "+re.sub(r"delete","select from",line)+")"
+                delFromTableNames=self.getTablesFromSelect(fromLine)
+                try:
+                    delFromTableNames.remove(delToTableName)
+                except:
+                    pass
         except:
-            dictObj["table_name"]=""
-            dictObj["alias_name"]=""
-            logging.error("analyseDelete - "+stmt)
-        return json.dumps(dictObj);
+            logging.error("analyseUpdate - "+stmt)
+        dictObj["table_name"]=delToTableName
+        dictObj["from_table_names"]=delFromTableNames
+        return json.dumps(dictObj) ;
     
     def analyseMerge(self,stmt):
         dictObj={}
