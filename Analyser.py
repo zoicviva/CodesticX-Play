@@ -3,7 +3,6 @@ import re
 import os
 import logging
 import sys
-from TableExtractor import TableExtractor 
 
 class Analyser:
     def __init__(self):
