@@ -282,15 +282,17 @@ class Analyser:
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.mergeSeqNumeber
         dictObj["statement"]=stmt
+        dictObj["table_name"]=""
+        dictObj["from_tables"]=[]
         try:
-            preTableName1=re.search(r'into(.*?)using', stmt).group(1)
-            preTableName2=re.search(r'.*\.\s*[^\s]*',preTableName1).group()
-            finalTableName=re.sub(' ', '', preTableName2.strip())
+            finalTableName=re.search("into\s*([^\s]+)", stmt).group(1)
             dictObj["table_name"]=finalTableName
-            dictObj["alias_name"]=preTableName1[len(preTableName2):].strip()
+            locationOfOn=self.getLevelZeroFirstLocation(stmt, " on ")
+            locationOfUsing=stmt.find("using")
+            line="(select from "+stmt[locationOfUsing+5:locationOfOn]+")"
+            fromTables=self.getTablesFromSelect(line)
+            dictObj["from_tables"]=fromTables
         except:
-            dictObj["table_name"]=""
-            dictObj["alias_name"]=""
             logging.error("analyseMerge - "+stmt)
         return json.dumps(dictObj);
     
