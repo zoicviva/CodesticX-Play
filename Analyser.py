@@ -151,7 +151,24 @@ class Analyser:
         result=re.sub( r"~+","~",result)
         return result
 
-        
+    def getLevelZeroFirstLocation(self,line,key):
+        stack=[]
+        result=""
+        for i in line:
+            if i == '(':
+                stack.append(i)
+            if len(stack) == 1:
+                if i == '(' or i == ')':
+                    result+='~'
+                else:
+                    result+=i
+            else:
+                result+='~'
+            if i == ')':
+                stack.pop()
+        location=result.find(key)
+        return location
+
     def analyseCall(self,stmt):
         dictObj={}
         dictObj["type"]="others"
@@ -197,7 +214,6 @@ class Analyser:
             dictObj["from_table_names"]=""
             logging.error("analyseInsert - "+stmt)
         return json.dumps(dictObj);
-    
     
     def analyseDelete(self,stmt):
         dictObj={}
@@ -255,7 +271,7 @@ class Analyser:
                 except:
                     pass
         except:
-            logging.error("analyseUpdate - "+stmt)
+            logging.error("analyseDelete - "+stmt)
         dictObj["table_name"]=delToTableName
         dictObj["from_table_names"]=delFromTableNames
         return json.dumps(dictObj) ;
@@ -330,7 +346,12 @@ class Analyser:
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.selectSeqNumeber
         dictObj["statement"]=stmt
-        
+        try:
+            line="("+stmt+")"
+            fromTables=self.getTablesFromSelect(line)
+            dictObj["from_tables"]=fromTables
+        except:
+            logging.error("analyseSelect - "+stmt)
         return json.dumps(dictObj);
     
     def analyseDeclare(self,stmt):
