@@ -64,7 +64,6 @@ class Analyser:
         toJson.close()
     
     def matches(self,line, opendelim='(', closedelim=')'):
-        logging.info("matches function called")
         stack = []
         for m in re.finditer(r'[{}{}]'.format(opendelim, closedelim), line):
             pos = m.start()
@@ -85,7 +84,6 @@ class Analyser:
                 logging.error("expecting closing quote to match open quote starting at: '{}'".format(line[pos-1:]))
     
     def replaceMacthes(self,line):
-        logging.info("replaceMacthes function called")
         matches_arr=[]
         rplcd_arr=[]
         maxLevel=0
@@ -119,7 +117,6 @@ class Analyser:
         return rplcd_arr
     
     def getTablesFromSelect(self,line):
-        logging.info("getTablesFromSelect function called")
         rplcd_arr=self.replaceMacthes(line)
         tables=[]
         for i in rplcd_arr:
@@ -139,7 +136,6 @@ class Analyser:
         return tables
     
     def getLevelZeroQuery(self,line):
-        logging.info("getLevelZeroQuery function called")
         stack=[]
         result=""
     
@@ -159,7 +155,6 @@ class Analyser:
         return result
 
     def getLevelZeroFirstLocation(self,line,key):
-        logging.info("getLevelZeroFirstLocation function called")
         stack=[]
         result=""
         for i in line:
@@ -178,7 +173,6 @@ class Analyser:
         return location
 
     def analyseCall(self,stmt):
-        logging.info("analyseCall function called")
         dictObj={}
         dictObj["type"]="others"
         dictObj["subtype"]="call"
@@ -186,7 +180,7 @@ class Analyser:
         dictObj["seq_nr"]=self.callSeqNumeber
         dictObj["statement"]=stmt
         try:
-            preProcName=re.search(r'call \s*([^\n]+) \(', stmt).group(1)
+            preProcName=re.search(r'call \s*([^\n]+)\s*\(', stmt).group(1)
             finalProcName=re.sub(' ', '', preProcName.strip())
             dictObj["proc_name"]=finalProcName
             preArgStr=re.search(r'\(\s*([^\n]+)\)', stmt).group(1)
@@ -199,7 +193,6 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseInsert(self,stmt):
-        logging.info("analyseInsert function called")
         dictObj={}
         dictObj["type"]="dml"
         dictObj["subtype"]="insert"
@@ -226,7 +219,6 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseDelete(self,stmt):
-        logging.info("analyseDelete function called")
         dictObj={}
         dictObj["type"]="dml"
         dictObj["subtype"]="delete"
@@ -287,7 +279,6 @@ class Analyser:
         return json.dumps(dictObj) ;
     
     def analyseMerge(self,stmt):
-        logging.info("analyseMerge function called")
         dictObj={}
         dictObj["type"]="dml"
         dictObj["subtype"]="merge"
@@ -309,7 +300,6 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseUpdate(self,stmt):
-        logging.info("analyseUpdate function called")
         dictObj={}
         dictObj["type"]="dml"
         dictObj["subtype"]="update"
@@ -354,7 +344,6 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseSelect(self,stmt):
-        logging.info("analyseSelect function called")
         dictObj={}
         dictObj["type"]="dql"
         dictObj["subtype"]="select"
@@ -370,7 +359,6 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseDeclare(self,stmt):
-        logging.info("analyseDeclare function called")
         dictObj={}
         dictObj["type"]="others"
         dictObj["subtype"]="declare"
@@ -381,7 +369,6 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseCollect(self,stmt):
-        logging.info("analyseCollect function called")
         dictObj={}
         dictObj["type"]="others"
         dictObj["subtype"]="collect"
@@ -404,7 +391,6 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseSet(self,stmt):
-        logging.info("analyseSet function called")
         dictObj={}
         dictObj["type"]="others"
         dictObj["subtype"]="set"
@@ -459,5 +445,6 @@ class Analyser:
                 toJson.write(self.analyseCollect(lowerLine)+"\n")
         fileContent.close()
         toJson.close()
+        logging.info("startAnalysing function ended json file is ready")
         self.masterJson(fileName)
         return "success"
