@@ -10,8 +10,9 @@ import Tkinter
 import tkMessageBox
 from tkFileDialog import askopenfilename
 import webbrowser
-import logging
+import logging,logging.handlers
 import os
+import time
 
 
 top = Tkinter.Tk()
@@ -21,6 +22,7 @@ file1=""
 file2=""
 userHome=os.path.expanduser('~')
 resultBoxGlob = top
+FORMAT = "%(levelname)s %(asctime)-15s %(module)s %(message)s"
 
 def openHtmlInBrowser():
     webbrowser.open_new(file1)
@@ -37,8 +39,9 @@ def startButtonCallBack():
         filePannel.withdraw()
         fileNameSelected=askopenfilename() # show an "Open" dialog box and return the path to the selected file
         filePannel.destroy()
-        logging.info("starting to copy the selected file to orig folder")
         fileName=UtilitiesCC.copyFileToOrig(fileNameSelected)
+        
+        logging.info(fileName+" copied to orig folder")
         fileContent=CommentHandler(fileName).removeComments()
         UtilitiesCC.writeTextToFile(userHome+"/CodeCompliance/work", fileName, fileContent)
         fileObj=StatementSequencer(fileName)
@@ -89,7 +92,7 @@ def quitMainProgram():
 #/Users/vivek.keshri/Desktop/DQ_ENHANCEMENT\ PHASE\ 2/dq/DQ_ENHANCEMENT\ PHASE\ 2/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_raw_file.sql
 if __name__=="__main__" :
     DirSetup.setup()
-    logging.basicConfig(filename=userHome+"/CodeCompliance/codecompliancelog.log" , level="INFO",filemode="w")
+    logging.basicConfig(filename=userHome+"/CodeCompliance/logs/codecompliance"+time.strftime("_%d%m%Y_%H%M%S")+".log" , level="INFO",filemode="w",datefmt='%Y-%m-%d %H:%M:%S',format=FORMAT)
     top.wm_title("Code Compliance")
     top.update_idletasks()
     top.resizable(width=FALSE, height=FALSE)

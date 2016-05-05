@@ -19,7 +19,9 @@ class Analyser:
         self.userHome=os.path.expanduser('~')
         
     def masterJson(self,fileName):
+        logging.info("masterJson function called")
         dictObj={}
+        dictObj["type"]="master_data"
         noCmntFile=open(self.userHome+"/CodeCompliance/work/"+fileName,"r")
         fileContent=noCmntFile.read()
         noCmntFile.close()
@@ -62,6 +64,7 @@ class Analyser:
         toJson.close()
     
     def matches(self,line, opendelim='(', closedelim=')'):
+        logging.info("matches function called")
         stack = []
         for m in re.finditer(r'[{}{}]'.format(opendelim, closedelim), line):
             pos = m.start()
@@ -74,14 +77,15 @@ class Analyser:
                     prevpos = stack.pop()
                     yield (prevpos, pos, len(stack))
                 else:
-                    print("encountered extraneous closing quote at pos {}: '{}'".format(pos, line[pos:] ))
+                    logging.error("encountered extraneous closing quote at pos {}: '{}'".format(pos, line[pos:] ))
                     pass
 
         if len(stack) > 0:
             for pos in stack:
-                print("expecting closing quote to match open quote starting at: '{}'".format(line[pos-1:]))
+                logging.error("expecting closing quote to match open quote starting at: '{}'".format(line[pos-1:]))
     
     def replaceMacthes(self,line):
+        logging.info("replaceMacthes function called")
         matches_arr=[]
         rplcd_arr=[]
         maxLevel=0
@@ -115,6 +119,7 @@ class Analyser:
         return rplcd_arr
     
     def getTablesFromSelect(self,line):
+        logging.info("getTablesFromSelect function called")
         rplcd_arr=self.replaceMacthes(line)
         tables=[]
         for i in rplcd_arr:
@@ -134,6 +139,7 @@ class Analyser:
         return tables
     
     def getLevelZeroQuery(self,line):
+        logging.info("getLevelZeroQuery function called")
         stack=[]
         result=""
     
@@ -153,6 +159,7 @@ class Analyser:
         return result
 
     def getLevelZeroFirstLocation(self,line,key):
+        logging.info("getLevelZeroFirstLocation function called")
         stack=[]
         result=""
         for i in line:
@@ -171,6 +178,7 @@ class Analyser:
         return location
 
     def analyseCall(self,stmt):
+        logging.info("analyseCall function called")
         dictObj={}
         dictObj["type"]="others"
         dictObj["subtype"]="call"
@@ -191,6 +199,7 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseInsert(self,stmt):
+        logging.info("analyseInsert function called")
         dictObj={}
         dictObj["type"]="dml"
         dictObj["subtype"]="insert"
@@ -217,6 +226,7 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseDelete(self,stmt):
+        logging.info("analyseDelete function called")
         dictObj={}
         dictObj["type"]="dml"
         dictObj["subtype"]="delete"
@@ -242,7 +252,6 @@ class Analyser:
                         tableName = re.search(r"([^\s]+)", removedAs).group(1)
                         aliasName = removedAs[len(tableName):].strip()
                         lvlZeroTtables.append({"table_name":tableName.strip(),"alias":aliasName})
-                print lvlZeroTtables
                 
                 for item in lvlZeroTtables:
                     if item["alias"]==tableOrAlias:
@@ -278,6 +287,7 @@ class Analyser:
         return json.dumps(dictObj) ;
     
     def analyseMerge(self,stmt):
+        logging.info("analyseMerge function called")
         dictObj={}
         dictObj["type"]="dml"
         dictObj["subtype"]="merge"
@@ -299,6 +309,7 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseUpdate(self,stmt):
+        logging.info("analyseUpdate function called")
         dictObj={}
         dictObj["type"]="dml"
         dictObj["subtype"]="update"
@@ -343,6 +354,7 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseSelect(self,stmt):
+        logging.info("analyseSelect function called")
         dictObj={}
         dictObj["type"]="dql"
         dictObj["subtype"]="select"
@@ -358,6 +370,7 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseDeclare(self,stmt):
+        logging.info("analyseDeclare function called")
         dictObj={}
         dictObj["type"]="others"
         dictObj["subtype"]="declare"
@@ -368,6 +381,7 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseCollect(self,stmt):
+        logging.info("analyseCollect function called")
         dictObj={}
         dictObj["type"]="others"
         dictObj["subtype"]="collect"
@@ -390,6 +404,7 @@ class Analyser:
         return json.dumps(dictObj);
     
     def analyseSet(self,stmt):
+        logging.info("analyseSet function called")
         dictObj={}
         dictObj["type"]="others"
         dictObj["subtype"]="set"
@@ -406,6 +421,7 @@ class Analyser:
         return json.dumps(dictObj);
     
     def startAnalysing(self,fileName):
+        logging.info("startAnalysing function called")
         fileContent=open(self.userHome+"/CodeCompliance/temp/"+fileName,"r")
         jsonFileName=self.userHome+"/CodeCompliance/temp/"+fileName+".json"
         toJson=open(jsonFileName,"w")

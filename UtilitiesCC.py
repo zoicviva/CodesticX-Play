@@ -18,7 +18,7 @@ class UtilitiesCC:
     
     @staticmethod
     def copyFileToOrig(filePath):
-        logging.info("copying "+filePath+" to "+os.getcwd()+"orig")
+        logging.info("copying "+filePath+" to orig")
         copy2(filePath, os.path.expanduser('~')+"/CodeCompliance/orig/")
         fileName=ntpath.basename(filePath)
         return fileName
