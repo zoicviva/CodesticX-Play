@@ -23,7 +23,8 @@ class Analyser:
         noCmntFile=open(self.userHome+"/CodeCompliance/work/"+fileName,"r")
         fileContent=noCmntFile.read()
         noCmntFile.close()
-        preProcName=re.search('replace\s*procedure([^\n]+) \(',fileContent.lower()).group(1)
+        preProcName=re.search('replace\s*procedure\s*(.*?)\(',fileContent.lower(),re.DOTALL).group(1)
+        preProcName=preProcName.replace("\n","")
         finalProcName=re.sub(' ', '', preProcName.strip())
         dictObj["proc_name"]=finalProcName
         dictObj["inserts"]=self.insertSeqNumeber
@@ -127,7 +128,8 @@ class Analyser:
                     
                     tables+=re.findall(r'from\s*([\w\d\.\_\$]+)',noWhere)
                     tables+=re.findall(r'join\s*([\w\d\.\_\$]+)',noWhere)
-                    tables+=re.findall(r',\s*([\w\d\.\_\$]+)',noWhere)
+                    if re.search(r"from",noWhere):
+                        tables+=re.findall(r',\s*([\w\d\.\_\$]+)',noWhere)
             
         return tables
     
