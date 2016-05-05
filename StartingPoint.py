@@ -8,9 +8,10 @@ from TableFlow import TableFlow
 from Tkinter import *
 import Tkinter
 import tkMessageBox
-from tkFileDialog import askopenfilename
+from tkFileDialog import askopenfilename,askdirectory
 import webbrowser
 import logging,logging.handlers
+from os import walk
 import os
 import time
 
@@ -39,18 +40,14 @@ def startButtonCallBack():
         filePannel.withdraw()
         fileNameSelected=askopenfilename() # show an "Open" dialog box and return the path to the selected file
         filePannel.destroy()
-        fileName=UtilitiesCC.copyFileToOrig(fileNameSelected)
         
+        fileName=UtilitiesCC.copyFileToOrig(fileNameSelected)
         logging.info(fileName+" copied to orig folder")
         fileContent=CommentHandler(fileName).removeComments()
         UtilitiesCC.writeTextToFile(userHome+"/CodeCompliance/work", fileName, fileContent)
         fileObj=StatementSequencer(fileName)
         sequencedfilePath=fileObj.sequenceIt()
-#         print "sequenced file present at : "+sequencedfilePath+" inside project folder"
         analyse=Analyser().startAnalysing(fileName)
-#         print analyse
-#         print checkVar1.get(),checkVar2.get()
-        
         msg=""
         if checkVar1.get()==1:
             global file1
@@ -84,6 +81,62 @@ def startButtonCallBack():
         openButton = Tkinter.Button(resultBox, text ="Open", command = openHtmlInBrowser)
         openButton.pack()
     
+def startFolderButtonCallBack():
+    
+    if checkVar1.get()==0 and checkVar2.get()==0 :
+        tkMessageBox.showinfo( "Code Compliance", "Atleast select one check box")
+    else :
+        filePannel=Tk() # we don't want a full GUI, so keep the root window from appearing
+        filePannel.withdraw()
+        folderSelected=askdirectory() # show an "Open" dialog box and return the path to the selected file
+        filePannel.destroy()
+        allFiles = []
+        for (dirpath, dirnames, filenames) in walk(folderSelected):
+            allFiles.extend(filenames)
+            break
+        files=[]
+        for file in allFiles:
+            if not re.search(r"^\.", file):
+                files.append(file)
+        
+        resultBox=Tkinter.Tk()
+        resultBox.wm_title("Code Compliance - Processing!")
+        resultBox.resizable(width=FALSE, height=TRUE)
+        w = 590 # width for the Tk root
+        h = 220 # height for the Tk root
+        ws = top.winfo_screenwidth() # width of the screen
+        hs = top.winfo_screenheight() # height of the screen
+        x = (ws/2) - (w/2)
+        y = (hs/2) - (h/2)
+        resultBox.geometry('%dx%d+%d+%d' % (w, h, x, y))
+        resultBox.lift()
+        
+        currentFile=1
+        totalFiles=len(files)
+        msg="Starting analysis!!"
+        text=Label(resultBox,bd=0,padx=50,pady=50,text=msg,wraplength=590 )
+        text.pack()
+        for file in files:
+            msg="("+str(currentFile)+"/"+str(totalFiles)+") Processing file "+file
+            text=Label(resultBox,bd=0,padx=50,pady=50,text=msg,wraplength=590 )
+            text.pack()
+            fileNameSelected=folderSelected+"/"+file
+            fileName=UtilitiesCC.copyFileToOrig(fileNameSelected)
+            logging.info(fileName+" copied to orig folder")
+            fileContent=CommentHandler(fileName).removeComments()
+            UtilitiesCC.writeTextToFile(userHome+"/CodeCompliance/work", fileName, fileContent)
+            fileObj=StatementSequencer(fileName)
+            sequencedfilePath=fileObj.sequenceIt()
+            analyse=Analyser().startAnalysing(fileName)
+            if checkVar1.get()==1:
+                OperationCount(fileName).tableWiseCount()
+            if checkVar2.get()==1:
+                TableFlow(fileName).tableFlowGenerator()
+            currentFile+=1
+#         resultBox.destroy()        
+        tkMessageBox.showinfo( "Code Compliance", "Processing completed!")
+
+
 def quitMainProgram():
     top.destroy()
 
@@ -108,8 +161,10 @@ if __name__=="__main__" :
     text=Label(top,bd=0,bg="gray",height=1,width=40,padx=50,pady=50,text="Hello, welcome to Code Compliance Tool.")
     text.pack()
     
-    b = Tkinter.Button(top, text ="Select File and start", command = startButtonCallBack)
-    b.pack({"side": "right"})
+    fileButton = Tkinter.Button(top, text ="Select File", command = startButtonCallBack)
+    fileButton.pack({"side": "right"})
+    folderButton = Tkinter.Button(top, text ="Select Folder", command = startFolderButtonCallBack)
+    folderButton.pack({"side": "right"})
     quitBttn = Tkinter.Button(top, text ="Quit", command = quitMainProgram)
     quitBttn.pack({"side": "right"})
     c1 = Checkbutton(top, text = "Statement Count", variable = checkVar1,onvalue = 1, offvalue = 0)

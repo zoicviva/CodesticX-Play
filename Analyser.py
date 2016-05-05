@@ -128,8 +128,8 @@ class Analyser:
                     noWhere=re.sub(r'select .* from','from',item)
                     noWhere=re.sub(r' where .*| group .*| qualify .*| having .*| order .*',';',noWhere)
                     
-                    tables+=re.findall(r'from\s*([\w\d\.\_\$]+)',noWhere)
-                    tables+=re.findall(r'join\s*([\w\d\.\_\$]+)',noWhere)
+                    tables+=re.findall(r'from\s+([\w\d\.\_\$]+)',noWhere)
+                    tables+=re.findall(r'join\s+([\w\d\.\_\$]+)',noWhere)
                     if re.search(r"from",noWhere):
                         tables+=re.findall(r',\s*([\w\d\.\_\$]+)',noWhere)
             
@@ -200,8 +200,7 @@ class Analyser:
         dictObj["seq_nr"]=self.insertSeqNumeber
         dictObj["statement"]=stmt
         try:
-            preIntoTableName=re.search(r'into\s*([^\(]*)', stmt).group(1)
-            finalIntoTableName=re.sub(' ', '', preIntoTableName.strip())
+            finalIntoTableName=re.search(r'into\s*([\w\d\.\_\$]+)', stmt).group(1)
             dictObj["table_name"]=finalIntoTableName
             noCnstStmt=re.sub("\'.*?\'","''",stmt)
             line=""
@@ -266,7 +265,7 @@ class Analyser:
                     
             else:
                 delToTableName=re.search(r"delete\s+([\w\d\.\_\$]+)", stmt).group(1)
-                fromLine="( "+re.sub(r"delete","select from",line)+")"
+                fromLine="( "+re.sub(r"delete","select from",stmt)+")"
                 delFromTableNames=self.getTablesFromSelect(fromLine)
                 try:
                     delFromTableNames.remove(delToTableName)
