@@ -113,13 +113,13 @@ def startFolderButtonCallBack():
         
         currentFile=1
         totalFiles=len(files)
-        msg="Starting analysis!!"
-        text=Label(resultBox,bd=0,padx=50,pady=50,text=msg,wraplength=590 )
-        text.pack()
+#         msg="analysis in process!!"
+#         text=Label(resultBox,bd=0,padx=50,pady=50,text=msg,wraplength=590 )
+#         text.pack()
         for file in files:
-            msg="("+str(currentFile)+"/"+str(totalFiles)+") Processing file "+file
-            text=Label(resultBox,bd=0,padx=50,pady=50,text=msg,wraplength=590 )
-            text.pack()
+#             msg="("+str(currentFile)+"/"+str(totalFiles)+") Processing file "+file
+#             text=Label(resultBox,bd=0,padx=50,pady=50,text=msg,wraplength=590 )
+#             text.pack()
             fileNameSelected=folderSelected+"/"+file
             fileName=UtilitiesCC.copyFileToOrig(fileNameSelected)
             logging.info(fileName+" copied to orig folder")

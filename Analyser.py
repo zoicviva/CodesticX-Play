@@ -82,6 +82,7 @@ class Analyser:
         if len(stack) > 0:
             for pos in stack:
                 logging.error("expecting closing quote to match open quote starting at: '{}'".format(line[pos-1:]))
+            logging.error("matches : "+line)
     
     def replaceMacthes(self,line):
         matches_arr=[]
@@ -121,7 +122,7 @@ class Analyser:
         tables=[]
         for i in rplcd_arr:
             noTild=re.sub(r'~+','',i["query"].lower())
-            if re.search('^\s*select',noTild):
+            if re.search('^\s*select |^\s*sel ',noTild):
                 noBraces=re.sub(r'\(\s*\)',' ~ ',noTild)
                 splittedArr=re.sub('\sunion all\s|\sintersect\s|\sminus\s|\sunion\s',";;",noBraces).split(';;')
                 for item in splittedArr:
@@ -285,15 +286,15 @@ class Analyser:
         dictObj["seq_nr"]=self.mergeSeqNumeber
         dictObj["statement"]=stmt
         dictObj["table_name"]=""
-        dictObj["from_tables"]=[]
+        dictObj["from_table_names"]=[]
         try:
             finalTableName=re.search("into\s*([^\s]+)", stmt).group(1)
             dictObj["table_name"]=finalTableName
-            locationOfOn=self.getLevelZeroFirstLocation(stmt, " on ")
+            locationOfOn=self.getLevelZeroFirstLocation("("+stmt+")", " on ")
             locationOfUsing=stmt.find("using")
             line="(select from "+stmt[locationOfUsing+5:locationOfOn]+")"
             fromTables=self.getTablesFromSelect(line)
-            dictObj["from_tables"]=fromTables
+            dictObj["from_table_names"]=fromTables
         except:
             logging.error("analyseMerge - "+stmt)
         return json.dumps(dictObj);

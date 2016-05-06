@@ -66,7 +66,7 @@ class TableFlow:
         dictObjArr=[]
         isNoRightTable=True
         for jsonObj in jsonObjArr:
-            if(jsonObj["subtype"]=="insert"):
+            if(jsonObj["subtype"]=="insert" or jsonObj["subtype"]=="merge"):
                 dictObj={}
                 dictObj["center"]=jsonObj["table_name"]
 #                 fromTablesWithAlias=jsonObj["from_table_names"]
