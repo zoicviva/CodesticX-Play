@@ -5,7 +5,7 @@ import logging
 import sys
 
 class Analyser:
-    def __init__(self):
+    def __init__(self,procfileName):
         self.procSeqNumeber=0
         self.insertSeqNumeber=0
         self.selectSeqNumeber=0
@@ -16,6 +16,7 @@ class Analyser:
         self.setSeqNumeber=0
         self.declareSeqNumeber=0
         self.collectSeqNumeber=0
+        self.procfileName=procfileName
         self.userHome=os.path.expanduser('~')
         
     def masterJson(self,fileName):
@@ -82,7 +83,7 @@ class Analyser:
         if len(stack) > 0:
             for pos in stack:
                 logging.error("expecting closing quote to match open quote starting at: '{}'".format(line[pos-1:]))
-            logging.error("matches : "+line)
+            logging.error("["+self.procfileName+"]matches : "+line)
     
     def replaceMacthes(self,line):
         matches_arr=[]
@@ -190,7 +191,7 @@ class Analyser:
         except:
             dictObj["proc_name"]=""
             dictObj["args"]=""
-            logging.error("analyseCall - "+stmt)
+            logging.error("["+self.procfileName+"]analyseCall - "+stmt)
         return json.dumps(dictObj);
     
     def analyseInsert(self,stmt):
@@ -215,7 +216,7 @@ class Analyser:
         except:
             dictObj["table_name"]=""
             dictObj["from_table_names"]=""
-            logging.error("analyseInsert - "+stmt)
+            logging.error("["+self.procfileName+"]analyseInsert - "+stmt)
         return json.dumps(dictObj);
     
     def analyseDelete(self,stmt):
@@ -273,7 +274,7 @@ class Analyser:
                 except:
                     pass
         except:
-            logging.error("analyseDelete - "+stmt)
+            logging.error("["+self.procfileName+"]analyseDelete - "+stmt)
         dictObj["table_name"]=delToTableName
         dictObj["from_table_names"]=delFromTableNames
         return json.dumps(dictObj) ;
@@ -296,7 +297,7 @@ class Analyser:
             fromTables=self.getTablesFromSelect(line)
             dictObj["from_table_names"]=fromTables
         except:
-            logging.error("analyseMerge - "+stmt)
+            logging.error("["+self.procfileName+"]analyseMerge - "+stmt)
         return json.dumps(dictObj);
     
     def analyseUpdate(self,stmt):
@@ -338,7 +339,7 @@ class Analyser:
                 updateToTableName=re.search(r"update\s*([^\s]+)", stmt).group(1)
         
         except:
-            logging.error("analyseUpdate - "+stmt)   
+            logging.error("["+self.procfileName+"]analyseUpdate - "+stmt)   
         dictObj["table_name"]=updateToTableName
         dictObj["from_table_names"]=updateFromTableNames
         return json.dumps(dictObj);
@@ -355,7 +356,7 @@ class Analyser:
             fromTables=self.getTablesFromSelect(line)
             dictObj["from_tables"]=fromTables
         except:
-            logging.error("analyseSelect - "+stmt)
+            logging.error("["+self.procfileName+"]analyseSelect - "+stmt)
         return json.dumps(dictObj);
     
     def analyseDeclare(self,stmt):
@@ -386,7 +387,7 @@ class Analyser:
         except:
             dictObj["table_name"]=""
             dictObj["is_table_level"]=""
-            logging.error("analyseCollect - "+stmt)
+            logging.error("["+self.procfileName+"]analyseCollect - "+stmt)
             
         return json.dumps(dictObj);
     
@@ -403,7 +404,7 @@ class Analyser:
         except:
             dictObj["variable"]=""
             dictObj["value"]=""
-            logging.error("analyseSet - "+stmt)
+            logging.error("["+self.procfileName+"]analyseSet - "+stmt)
         return json.dumps(dictObj);
     
     def startAnalysing(self,fileName):

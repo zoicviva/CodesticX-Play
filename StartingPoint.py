@@ -127,7 +127,7 @@ def startFolderButtonCallBack():
             UtilitiesCC.writeTextToFile(userHome+"/CodeCompliance/work", fileName, fileContent)
             fileObj=StatementSequencer(fileName)
             sequencedfilePath=fileObj.sequenceIt()
-            analyse=Analyser().startAnalysing(fileName)
+            analyse=Analyser(fileName).startAnalysing(fileName)
             if checkVar1.get()==1:
                 OperationCount(fileName).tableWiseCount()
             if checkVar2.get()==1:
