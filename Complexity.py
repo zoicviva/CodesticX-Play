@@ -91,15 +91,19 @@ class Complexity:
         dictObj["type"]="score"
         dictObj["ideal_score"]=idealScore
         dictObj["actual_score"]=finalActScore
-        dictObj["complex_stmts"]=insCnt+updCnt+delCnt+merCnt
-        dictObj["complex_stmt_percent"]=((insCnt+delCnt+updCnt+merCnt)*100.0/noOfStmts)
-        
+        dictObj["complex_stmts"]=insCnt+updCnt+delCnt+merCnt       
+         
         if finalActScore > (idealScore*2):
             dictObj["percent_of_ideal"]=200
-        else :
+        elif idealScore == 0:
+            dictObj["percent_of_ideal"]=0
+        else:
             dictObj["percent_of_ideal"]=finalActScore*100.0/idealScore
-        dictObj["complex_stmt_percent"]=((insCnt+delCnt+updCnt+merCnt)*100.0/noOfStmts)
+            
+        if noOfStmts==0:
+            dictObj["complex_stmt_percent"]=0
+        else:
+            dictObj["complex_stmt_percent"]=((insCnt+delCnt+updCnt+merCnt)*100.0/noOfStmts)
 
         with open(userHome+"/CodeCompliance/temp/"+fileName+".master.json",mode='a') as feedsjson:
             feedsjson.write(json.dumps(dictObj)+"\n")
-            
