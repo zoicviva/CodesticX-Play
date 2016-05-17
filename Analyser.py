@@ -3,6 +3,7 @@ import re
 import os
 import logging
 import sys
+from Complexity import Complexity
 
 class Analyser:
     def __init__(self,procfileName):
@@ -61,7 +62,7 @@ class Analyser:
         dictObj["no_of_stmts"]=stmtCount
         jsonFileName=self.userHome+"/CodeCompliance/temp/"+fileName+".master.json"
         toJson=open(jsonFileName,"w")
-        toJson.write(json.dumps(dictObj))
+        toJson.write(json.dumps(dictObj)+"\n")
         toJson.close()
     
     def matches(self,line, opendelim='(', closedelim=')'):
@@ -448,4 +449,5 @@ class Analyser:
         toJson.close()
         logging.info("startAnalysing function ended json file is ready")
         self.masterJson(fileName)
+        Complexity.complexityScore(fileName)
         return "success"

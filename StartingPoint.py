@@ -1,4 +1,6 @@
 from DirSetup import DirSetup
+from ApplicationContainer import ApplicationContainer
+from ComplexityChart import ComplexityChart
 from StatmentSequencer import StatementSequencer
 from UtilitiesCC import UtilitiesCC
 from CommentHandler import CommentHandler
@@ -31,6 +33,11 @@ def openHtmlInBrowser():
     resultBoxGlob.destroy()
     return "Success"
 
+def openNavigateHtml():
+    webbrowser.open_new("file://"+userHome+"/CodeCompliance/html/index.html")
+    resultBoxGlob.destroy()
+    return "Success"
+
 def startButtonCallBack():
     
     if checkVar1.get()==0 and checkVar2.get()==0 :
@@ -47,7 +54,7 @@ def startButtonCallBack():
         UtilitiesCC.writeTextToFile(userHome+"/CodeCompliance/work", fileName, fileContent)
         fileObj=StatementSequencer(fileName)
         sequencedfilePath=fileObj.sequenceIt()
-        analyse=Analyser().startAnalysing(fileName)
+        analyse=Analyser(fileName).startAnalysing(fileName)
         msg=""
         if checkVar1.get()==1:
             global file1
@@ -100,7 +107,9 @@ def startFolderButtonCallBack():
                 files.append(file)
         
         resultBox=Tkinter.Tk()
-        resultBox.wm_title("Code Compliance - Processing!")
+        global resultBoxGlob
+        resultBoxGlob=resultBox
+        resultBox.wm_title("Code Compliance - Success!")
         resultBox.resizable(width=FALSE, height=TRUE)
         w = 590 # width for the Tk root
         h = 220 # height for the Tk root
@@ -132,13 +141,19 @@ def startFolderButtonCallBack():
                 OperationCount(fileName).tableWiseCount()
             if checkVar2.get()==1:
                 TableFlow(fileName).tableFlowGenerator()
-            currentFile+=1
-#         resultBox.destroy()        
-        tkMessageBox.showinfo( "Code Compliance", "Processing completed!")
+            currentFile+=1        
+#         tkMessageBox.showinfo( "Code Compliance", "Processing completed!")
+        ComplexityChart().csvFile(files) 
+        ApplicationContainer().buildContainer(files)
+        msg="Navigation Page :"+userHome+"/CodeCompliance/html/index.html"
+        text=Label(resultBox,bd=0,padx=50,pady=50,text=msg,wraplength=590 )
+        text.pack()
+        openButton = Tkinter.Button(resultBox, text ="Open", command = openNavigateHtml)
+        openButton.pack()
+        top.destroy()
 
-
-def quitMainProgram():
-    top.destroy()
+# def quitMainProgram():
+#     top.destroy()
 
     
 #/Users/tata.swaroop/Desktop/Desktop/DQ/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_cmptn.sql
@@ -161,12 +176,12 @@ if __name__=="__main__" :
     text=Label(top,bd=0,bg="gray",height=1,width=40,padx=50,pady=50,text="Hello, welcome to Code Compliance Tool.")
     text.pack()
     
-    fileButton = Tkinter.Button(top, text ="Select File", command = startButtonCallBack)
-    fileButton.pack({"side": "right"})
+#     fileButton = Tkinter.Button(top, text ="Select File", command = startButtonCallBack)
+#     fileButton.pack({"side": "right"})
     folderButton = Tkinter.Button(top, text ="Select Folder", command = startFolderButtonCallBack)
     folderButton.pack({"side": "right"})
-    quitBttn = Tkinter.Button(top, text ="Quit", command = quitMainProgram)
-    quitBttn.pack({"side": "right"})
+#     quitBttn = Tkinter.Button(top, text ="Quit", command = quitMainProgram)
+#     quitBttn.pack({"side": "right"})
     c1 = Checkbutton(top, text = "Statement Count", variable = checkVar1,onvalue = 1, offvalue = 0)
     c2 = Checkbutton(top, text = "Table Flow", variable = checkVar2,onvalue = 1, offvalue = 0)
     c1.pack()

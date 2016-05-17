@@ -16,10 +16,14 @@ class OperationCount:
                 break
         return index
     def tableWiseCountHtml(self,tableDictArr):
-        masterJsonFile=open(self.userHome+"/CodeCompliance/temp/"+self.masterJsonFileName,'r');
-        masterJsonFileContent=masterJsonFile.read()
-        masterJsonFile.close()
-        masterJsonDict=json.loads(masterJsonFileContent)
+        masterJsonFileContent=open(self.userHome+"/CodeCompliance/temp/"+self.fileName+".master.json",'r')
+        masterJsonDict={}
+        for line in masterJsonFileContent:
+            tempDictObj=json.loads(line)
+            if tempDictObj["type"]=="master_data":
+                masterJsonDict=tempDictObj
+                break
+        masterJsonFileContent.close()
         totalOfProc={'insert':0,'update':0,'delete':0,'merge':0,'collect':0}
         
         htmlHeadFile=open(self.userHome+"/CodeCompliance/html/template/TableCountHead.txt","r")
