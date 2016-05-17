@@ -89,10 +89,11 @@ def openNavigateHtml():
 #         openButton.pack()
     
 def startFolderButtonCallBack():
-    filePannel=Tk() # we don't want a full GUI, so keep the root window from appearing
-    filePannel.withdraw()
+#     filePannel=Tk() # we don't want a full GUI, so keep the root window from appearing
+#     filePannel.withdraw()
+    top.attributes('-topmost',False)
     folderSelected=askdirectory() # show an "Open" dialog box and return the path to the selected file
-    filePannel.destroy()
+#     filePannel.destroy()
     allFiles = []
     for (dirpath, dirnames, filenames) in walk(folderSelected):
         allFiles.extend(filenames)
@@ -102,19 +103,6 @@ def startFolderButtonCallBack():
         if not re.search(r"^\.", file):
             files.append(file)
     
-    resultBox=Tkinter.Tk()
-    global resultBoxGlob
-    resultBoxGlob=resultBox
-    resultBox.wm_title("Code Compliance - Success!")
-    resultBox.resizable(width=FALSE, height=TRUE)
-    w = 590 # width for the Tk root
-    h = 220 # height for the Tk root
-    ws = top.winfo_screenwidth() # width of the screen
-    hs = top.winfo_screenheight() # height of the screen
-    x = (ws/2) - (w/2)
-    y = (hs/2) - (h/2)
-    resultBox.geometry('%dx%d+%d+%d' % (w, h, x, y))
-    resultBox.lift()
     
     currentFile=1
     totalFiles=len(files)
@@ -133,6 +121,21 @@ def startFolderButtonCallBack():
     ComplexityChart().csvFile(files) 
     ApplicationContainer().buildContainer(files)
     msg="Navigation Page :"+userHome+"/CodeCompliance/html/index.html"
+    
+    resultBox=Tkinter.Tk()
+    global resultBoxGlob
+    resultBoxGlob=resultBox
+    resultBox.wm_title("Code Compliance - Success!")
+    resultBox.resizable(width=FALSE, height=FALSE)
+    w = 590 # width for the Tk root
+    h = 220 # height for the Tk root
+    ws = top.winfo_screenwidth() # width of the screen
+    hs = top.winfo_screenheight() # height of the screen
+    x = (ws/2) - (w/2)
+    y = (hs/2) - (h/2)
+    resultBox.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    resultBox.lift()
+    
     text=Label(resultBox,bd=0,padx=50,pady=50,text=msg,wraplength=590 )
     text.pack()
     openButton = Tkinter.Button(resultBox, text ="Open", command = openNavigateHtml)
