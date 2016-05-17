@@ -1,5 +1,6 @@
 from DirSetup import DirSetup
 from ApplicationContainer import ApplicationContainer
+from ApplicationHome import ApplicationHome
 from ComplexityChart import ComplexityChart
 from StatmentSequencer import StatementSequencer
 from UtilitiesCC import UtilitiesCC
@@ -118,7 +119,7 @@ def startFolderButtonCallBack():
         OperationCount(fileName).tableWiseCount()
         TableFlow(fileName).tableFlowGenerator()
         currentFile+=1        
-    ComplexityChart().csvFile(files) 
+    ApplicationHome().buildApplication(files)
     ApplicationContainer().buildContainer(files)
     msg="Navigation Page :"+userHome+"/CodeCompliance/html/index.html"
     
