@@ -17,7 +17,7 @@ import logging,logging.handlers
 from os import walk
 import os
 import time
-
+import re
 
 top = Tkinter.Tk()
 # checkVar1 = IntVar()
