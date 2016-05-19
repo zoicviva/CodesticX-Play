@@ -18,9 +18,9 @@ class ApplicationContainer:
         
         for fileName in files:
             body+="<li><a href='#about/history'>"+fileName+"</a><ul>\n"
-            body+="<li id='mgtNavMenu'><a href='file://"+self.userHome+"/CodeCompliance/html/TableCount_"+fileName+".html' target='myIframe'>Statement Stats</a></li>\n"
-            body+="<li id='salesNavMenu'><a href='file://"+self.userHome+"/CodeCompliance/html/TableFlow_"+fileName+".html' target='myIframe'>Linear Flow</a></li>\n"
-            body+="<li id='devNavMenu'><a href='#about/team/development'>Complexity</a></li>\n"
+            body+="<li id='mgtNavMenu'><a href='file://"+self.userHome+"/CodeCompliance/html/TableCount_"+fileName+".html' target='myIframe'>Statistics</a></li>\n"
+            body+="<li id='salesNavMenu'><a href='file://"+self.userHome+"/CodeCompliance/html/TableFlow_"+fileName+".html' target='myIframe'>Program Flow</a></li>\n"
+            body+="<li id='devNavMenu'><a href='#about/team/development'>Complexity & Warning</a></li>\n"
             body+="</ul></li>"
         body+="</ul></li></ul>"
         
