@@ -1,109 +1,96 @@
-import json
-import os
 import re
-from ComplexityChart import ComplexityChart
-
+import json
 
 class Complexity:
-        
-    @staticmethod
-    def complexityScore(fileName):
-        
-        dictObj={}
-        userHome=os.path.expanduser('~')
-        jsonFileContent=open(userHome+"/CodeCompliance/temp/"+fileName+".json",'r')
-        jsonObjArr=[]
-        for line in jsonFileContent:
-            jsonObjArr.append(json.loads(line))
-        jsonFileContent.close()
-
-        masterJsonFileContent=open(userHome+"/CodeCompliance/temp/"+fileName+".master.json",'r')
-        masterJsonObjArr=[]
-        for line in masterJsonFileContent:
-            masterJsonObjArr.append(json.loads(line))
-        masterJsonFileContent.close()
-
-        finalActScore=0
-        eachTableScore=5
-        qualifyScore=2
-        idealInsertScore=15
-        idealUpdateScore=10
-        idealDelScore=5
-        idealMergeScore=10
-        insCnt=0
-        updCnt=0
-        delCnt=0
-        merCnt=0
-
-        bonus=0
-
-        for jsonObj in jsonObjArr:
-            if jsonObj["subtype"]=="insert" :
-                actInsertScore=((len(jsonObj["from_table_names"]))*eachTableScore)
-                if re.search(r'(case\s*when|extract|coalesce|distinct|group|count)',jsonObj["statement"]):
-                    actInsertScore=actInsertScore+len(re.findall(r'(case\s*when|extract|coalesce|distinct|group|count)',jsonObj["statement"]))
-                if re.search(r'\s*(qualify|having|rollup|cube)\s*',jsonObj["statement"]):
-                    actInsertScore=actInsertScore+(len(re.findall(r'\s*(qualify|having|rollup|cube)\s*',jsonObj["statement"]))*qualifyScore)
-                if actInsertScore > idealInsertScore:
-                    insCnt=insCnt+1
-                finalActScore+=actInsertScore
     
-            if jsonObj["subtype"]=="update" :
-                actUpdateScore=((len(jsonObj["from_table_names"])+1)*eachTableScore)
-                if re.search(r'(case\s*when|extract|coalesce|distinct|group|count)',jsonObj["statement"]):
-                    actUpdateScore=actUpdateScore+len(re.findall(r'(case\s*when|extract|coalesce|distinct|group|count)',jsonObj["statement"]))
-                if re.search(r'\s*(qualify|having|rollup|cube)\s*',jsonObj["statement"]):
-                    actUpdateScore=actUpdateScore+(len(re.findall(r'\s*(qualify|having|rollup|cube)\s*',jsonObj["statement"]))*qualifyScore)
-                if actUpdateScore > idealUpdateScore:
-                    updCnt=updCnt+1
-                finalActScore+=actUpdateScore
-     
-            if jsonObj["subtype"]=="delete" :
-                actDelScore=((len(jsonObj["from_table_names"])+1)*eachTableScore)
-                if re.search(r'(case\s*when|extract|coalesce|distinct|group|count|where)',jsonObj["statement"]):
-                    actDelScore=actDelScore+len(re.findall(r'(case\s*when|extract|coalesce|distinct|group|count|where)',jsonObj["statement"]))
-                if re.search(r'\s*(qualify|having|rollup|cube)\s*',jsonObj["statement"]):
-                    actDelScore=actDelScore+(len(re.findall(r'\s*(qualify|having|rollup|cube)\s*',jsonObj["statement"]))*qualifyScore)
-                if actDelScore > idealDelScore:
-                    delCnt=delCnt+1
-                finalActScore+=actDelScore   
-    
-            if jsonObj["subtype"]=="merge" :
-                actMergeScore=((len(jsonObj["from_table_names"]))*eachTableScore)
-                if re.search(r'(case\s*when|extract|coalesce|distinct|group|count)',jsonObj["statement"]):
-                    actMergeScore=actMergeScore+len(re.findall(r'(case\s*when|extract|coalesce|distinct|group|count)',jsonObj["statement"]))
-                if re.search(r'\s*(qualify|having|rollup|cube)\s*',jsonObj["statement"]):
-                    actMergeScore=actMergeScore+(len(re.findall(r'\s*(qualify|having|rollup|cube)\s*',jsonObj["statement"]))*qualifyScore)
-                if actMergeScore > idealMergeScore:
-                    merCnt=merCnt+1
-                finalActScore+=actMergeScore
+    def __init__(self):
+        self.complxStmts=0
+        self.stmtCnt=0
+        self.insCnt=0
+        self.updCnt=0
+        self.delCnt=0
+        self.MerCnt=0
+        self.finalInsertScore=0
+        self.finalUpdateScore=0
+        self.finalDelScore=0
+        self.finalMergeScore=0
+        self.eachTablePoint=5
+        self.qualifyPoint=2
+        self.idealInsertScore=15
+        self.idealUpdateScore=10
+        self.idealDeleteScore=5
+        self.idealMergeScore=10
         
-        for jsonObj in masterJsonObjArr:
-            if jsonObj["type"]=="master_data":
-                noOfStmts=jsonObj["inserts"]+jsonObj["updates"]+jsonObj["deletes"]+jsonObj["merges"]
-                idealScore=(jsonObj["inserts"]*idealInsertScore)+(jsonObj["updates"]*idealUpdateScore)+(jsonObj["deletes"]*idealDelScore)+(jsonObj["merges"]*idealMergeScore)
-
-        for i in range(0,noOfStmts):
-            bonus+=(0.01*i)
+    def getInsertScore(self,dictObj):
+        actInsertScore=((len(dictObj["from_table_names"]))*self.eachTablePoint)
+        if re.search(r'(case\s*when|extract|coalesce|distinct|group|count)',dictObj["statement"]):
+            actInsertScore=actInsertScore+len(re.findall(r'(case\s*when|extract|coalesce|distinct|group|count)',dictObj["statement"]))
+        if re.search(r'\s*(qualify|having|rollup|cube)\s*',dictObj["statement"]):
+            actInsertScore=actInsertScore+(len(re.findall(r'\s*(qualify|having|rollup|cube)\s*',dictObj["statement"]))*self.qualifyPoint)
+        if actInsertScore > self.idealInsertScore:
+            self.complxStmts=self.complxStmts+1
+        self.stmtCnt+=1
+        self.insCnt+=1
+        self.finalInsertScore+=actInsertScore
+        return actInsertScore
+        
+    def getUpdateScore(self,dictObj):
+        actUpdateScore=((len(dictObj["from_table_names"])+1)*self.eachTablePoint)
+        if re.search(r'(case\s*when|extract|coalesce|distinct|group|count)',dictObj["statement"]):
+            actUpdateScore=actUpdateScore+len(re.findall(r'(case\s*when|extract|coalesce|distinct|group|count)',dictObj["statement"]))
+        if re.search(r'\s*(qualify|having|rollup|cube)\s*',dictObj["statement"]):
+            actUpdateScore=actUpdateScore+(len(re.findall(r'\s*(qualify|having|rollup|cube)\s*',dictObj["statement"]))*self.qualifyPoint)
+        if actUpdateScore > self.idealUpdateScore:
+            self.complxStmts=self.complxStmts+1
+        self.stmtCnt+=1
+        self.updCnt=self.updCnt+1
+        self.finalUpdateScore+=actUpdateScore
+        return actUpdateScore
+        
+    def getDeleteScore(self,dictObj):
+        actDelScore=((len(dictObj["from_table_names"])+1)*self.eachTablePoint)
+        if re.search(r'(case\s*when|extract|coalesce|distinct|group|count|where)',dictObj["statement"]):
+            actDelScore=actDelScore+len(re.findall(r'(case\s*when|extract|coalesce|distinct|group|count|where)',dictObj["statement"]))
+        if re.search(r'\s*(qualify|having|rollup|cube)\s*',dictObj["statement"]):
+            actDelScore=actDelScore+(len(re.findall(r'\s*(qualify|having|rollup|cube)\s*',self.stmt))*self.qualifyPoint)
+        if actDelScore > self.idealDeleteScore:
+            self.complxStmts=self.complxStmts+1
+        self.stmtCnt+=1
+        self.delCnt=self.delCnt+1
+        self.finalDelScore+=actDelScore
+        return actDelScore
             
-        finalActScore=finalActScore+bonus
+    def getMergeScore(self,dictObj):
+        actMergeScore=((len(dictObj["from_table_names"]))*self.eachTablePoint)
+        if re.search(r'(case\s*when|extract|coalesce|distinct|group|count)',dictObj["statement"]):
+            actMergeScore=actMergeScore+len(re.findall(r'(case\s*when|extract|coalesce|distinct|group|count)',dictObj["statement"]))
+        if re.search(r'\s*(qualify|having|rollup|cube)\s*',dictObj["statement"]):
+            actMergeScore=actMergeScore+(len(re.findall(r'\s*(qualify|having|rollup|cube)\s*',dictObj["statement"]))*self.qualifyPoint)
+        if actMergeScore > self.idealMergeScore:
+            self.complxStmts=self.complxStmts+1
+        self.stmtCnt+=1
+        self.MerCnt+=1
+        self.finalMergeScore+=actMergeScore
+        return actMergeScore
         
-        dictObj["type"]="score"
+    def getFinalScore(self):
+        dictObj={}
+        bonus=0
+        for i in range(0,self.stmtCnt):
+            bonus+=(0.01*i)
+        idealScore=(self.insCnt*15)+(self.updCnt*10)+(self.delCnt*5)+(self.MerCnt*10)
         dictObj["ideal_score"]=idealScore
-        dictObj["actual_score"]=finalActScore
-        dictObj["complex_stmts"]=insCnt+updCnt+delCnt+merCnt       
-         
-        if finalActScore > (idealScore*2):
+        actualScore=self.finalInsertScore+self.finalUpdateScore+self.finalDelScore+self.finalMergeScore+bonus
+        dictObj["actual_score"]=actualScore
+        dictObj["complex_stmts"]=self.complxStmts
+        if actualScore > (idealScore*2):
             dictObj["percent_of_ideal"]=200
         elif idealScore == 0:
             dictObj["percent_of_ideal"]=0
         else:
-            dictObj["percent_of_ideal"]=finalActScore*100.0/idealScore
-            
-        if noOfStmts==0:
+            dictObj["percent_of_ideal"]=actualScore*100.0/idealScore
+        if self.stmtCnt == 0:
             dictObj["complex_stmt_percent"]=0
         else:
-            dictObj["complex_stmt_percent"]=((insCnt+delCnt+updCnt+merCnt)*100.0/noOfStmts)
-
-        with open(userHome+"/CodeCompliance/temp/"+fileName+".master.json",mode='a') as feedsjson:
-            feedsjson.write(json.dumps(dictObj)+"\n")
+            dictObj["complex_stmt_percent"]=((self.complxStmts*100.0)/self.stmtCnt)    
+        return dictObj    
