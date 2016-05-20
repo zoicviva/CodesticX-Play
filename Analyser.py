@@ -202,10 +202,10 @@ class Analyser:
         dictObj["proc_seq_nr"]=self.procSeqNumeber
         dictObj["seq_nr"]=self.insertSeqNumeber
         dictObj["statement"]=stmt
+        stmt=re.sub("\'.*?\'","''",stmt)
         try:
             finalIntoTableName=re.search(r'into\s*([\w\d\.\_\$]+)', stmt).group(1)
             dictObj["table_name"]=finalIntoTableName
-            noCnstStmt=re.sub("\'.*?\'","''",stmt)
             line=""
             if re.search(r'insert\s*into\s*[\s\w\d\.\_\$]+\s*\(',stmt):
                 line=re.sub(r'insert\s*into\s*[\s\w\d\.\_\$]+\s*\(.*?\)','',stmt)
