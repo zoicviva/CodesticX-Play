@@ -1,6 +1,6 @@
 import json
 import os
-
+from SvgFlowChart import SvgFlowChart
 class TableFlow:
     def __init__(self,fileName):
         self.jsonFileName=fileName+".json"
@@ -96,7 +96,9 @@ class TableFlow:
                         dictObj["right"]=leftTables
                         isNoRightTable=True
                 dictObjArr.append(dictObj)
-        htmlFileName=self.tableFlowHTML(dictObjArr)
+        
+#        htmlFileName=self.tableFlowHTML(dictObjArr)
+        htmlFileName=SvgFlowChart(self.fileName).drawFullChart(dictObjArr)
 #         print "open this in web browser : file://"+os.path.abspath(htmlFileName)
         return "file://"+os.path.abspath(htmlFileName)
 

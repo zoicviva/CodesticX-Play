@@ -19,6 +19,7 @@ class Analyser:
         self.collectSeqNumeber=0
         self.procfileName=procfileName
         self.userHome=os.path.expanduser('~')
+        self.complexityObj=Complexity()
         
     def masterJson(self,fileName):
         logging.info("masterJson function called")
@@ -61,8 +62,10 @@ class Analyser:
         stmtCount=len(re.findall("\n",fileContent))
         dictObj["no_of_stmts"]=stmtCount
         jsonFileName=self.userHome+"/CodeCompliance/temp/"+fileName+".master.json"
+        complexityDictObj=self.complexityObj.getFinalScore()
         toJson=open(jsonFileName,"w")
         toJson.write(json.dumps(dictObj)+"\n")
+        toJson.write(json.dumps(complexityDictObj)+"\n")
         toJson.close()
     
     def matches(self,line, opendelim='(', closedelim=')'):
@@ -218,6 +221,7 @@ class Analyser:
             dictObj["table_name"]=""
             dictObj["from_table_names"]=""
             logging.error("["+self.procfileName+"]analyseInsert - "+stmt)
+        dictObj["complexity_score"]=self.complexityObj.getInsertScore(dictObj)
         return json.dumps(dictObj);
     
     def analyseDelete(self,stmt):
@@ -278,6 +282,7 @@ class Analyser:
             logging.error("["+self.procfileName+"]analyseDelete - "+stmt)
         dictObj["table_name"]=delToTableName
         dictObj["from_table_names"]=delFromTableNames
+        dictObj["complexity_score"]=self.complexityObj.getDeleteScore(dictObj)
         return json.dumps(dictObj) ;
     
     def analyseMerge(self,stmt):
@@ -299,6 +304,7 @@ class Analyser:
             dictObj["from_table_names"]=fromTables
         except:
             logging.error("["+self.procfileName+"]analyseMerge - "+stmt)
+        dictObj["complexity_score"]=self.complexityObj.getMergeScore(dictObj)
         return json.dumps(dictObj);
     
     def analyseUpdate(self,stmt):
@@ -343,6 +349,7 @@ class Analyser:
             logging.error("["+self.procfileName+"]analyseUpdate - "+stmt)   
         dictObj["table_name"]=updateToTableName
         dictObj["from_table_names"]=updateFromTableNames
+        dictObj["complexity_score"]=self.complexityObj.getUpdateScore(dictObj)
         return json.dumps(dictObj);
     
     def analyseSelect(self,stmt):
@@ -449,5 +456,5 @@ class Analyser:
         toJson.close()
         logging.info("startAnalysing function ended json file is ready")
         self.masterJson(fileName)
-        Complexity.complexityScore(fileName)
+#        Complexity.complexityScore(fileName)
         return "success"
