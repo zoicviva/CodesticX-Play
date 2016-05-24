@@ -82,6 +82,7 @@ class Complexity:
         actualScore=self.finalInsertScore+self.finalUpdateScore+self.finalDelScore+self.finalMergeScore+bonus
         dictObj["actual_score"]=actualScore
         dictObj["complex_stmts"]=self.complxStmts
+        dictObj["type"]="score"
         if actualScore > (idealScore*2):
             dictObj["percent_of_ideal"]=200
         elif idealScore == 0:
