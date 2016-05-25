@@ -113,7 +113,8 @@ class SvgFlowChart:
         self.displaceY+=calculatedDisplacement
         return finalString   
 
-    def drawFullChart(self,jsonArr):   
+    def drawFullChart(self,jsonArr):  
+        print jsonArr 
         htmlHeadFile=open(self.userHome+"/CodeCompliance/html/template/SVGFlowHead.txt","r")
         htmlHead=htmlHeadFile.read()
         htmlHeadFile.close() 
