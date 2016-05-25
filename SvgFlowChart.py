@@ -114,7 +114,6 @@ class SvgFlowChart:
         return finalString   
 
     def drawFullChart(self,jsonArr):  
-        print jsonArr 
         htmlHeadFile=open(self.userHome+"/CodeCompliance/html/template/SVGFlowHead.txt","r")
         htmlHead=htmlHeadFile.read()
         htmlHeadFile.close() 
