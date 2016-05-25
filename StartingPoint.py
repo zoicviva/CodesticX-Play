@@ -1,4 +1,4 @@
-from DirSetup import DirSetup
+# from DirSetup import DirSetup
 from ApplicationContainer import ApplicationContainer
 from ApplicationHome import ApplicationHome
 from ComplexityChart import ComplexityChart
@@ -142,15 +142,9 @@ def startFolderButtonCallBack():
     openButton = Tkinter.Button(resultBox, text ="Open", command = openNavigateHtml)
     openButton.pack()
     top.destroy()
-
-# def quitMainProgram():
-#     top.destroy()
-
-    
-#/Users/tata.swaroop/Desktop/Desktop/DQ/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_cmptn.sql
-#/Users/vivek.keshri/Desktop/DQ_ENHANCEMENT\ PHASE\ 2/dq/DQ_ENHANCEMENT\ PHASE\ 2/TAG_CR_26582541_DQ/compile/spl/sp_load_em_carrier_dq_raw_file.sql
+ 
 if __name__=="__main__" :
-    DirSetup.setup()
+#     DirSetup.setup()
     logging.basicConfig(filename=userHome+"/CodeCompliance/logs/codecompliance"+time.strftime("_%d%m%Y_%H%M%S")+".log" , level="INFO",filemode="w",datefmt='%Y-%m-%d %H:%M:%S',format=FORMAT)
     top.wm_title("Code Compliance")
     top.update_idletasks()

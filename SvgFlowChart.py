@@ -30,6 +30,7 @@ class SvgFlowChart:
         left=jsonObj["left"]
         center=jsonObj["center"]
         right=jsonObj["right"]
+        operationType=jsonObj["type"]
         leftString=""     
         centerString=""
         leftIndex=1
@@ -64,7 +65,7 @@ class SvgFlowChart:
         if not len(left)==0:
             leftString+="<line x1='"+str(self.leftCenterLineX)+"' y1='"+str(centerY+self.displaceY)+"' x2='"+str(self.leftCenterLineX+self.hzLineWidth)+"' y2='"+str(centerY+self.displaceY)+"'  />\n"
             leftString+="<path d='M"+str(self.leftArrowX)+" "+str(centerY-10+self.displaceY)+" L"+str((self.leftArrowX+10))+" "+str(centerY+self.displaceY)+" L"+str(self.leftArrowX)+" "+str(centerY+10+self.displaceY)+" Z' />\n"        
-        centerString="<g><rect rx='5' ry='5' class='center'  width='"+str(self.rectWidth)+"' height='"+str(self.rectHeight)+"' x="+str(self.centerRectX)+" y="+str(centerY+self.displaceY-(self.rectHeight/2))+"  /><text x='"+str(self.centerRectX +(self.rectWidth/2))+"' y='"+str(centerY+self.displaceY-(self.rectHeight/2)+30)+"' >"+center+"</text></g>\n"
+        centerString="<g><rect rx='5' ry='5' class='center "+operationType+"'  width='"+str(self.rectWidth)+"' height='"+str(self.rectHeight)+"' x="+str(self.centerRectX)+" y="+str(centerY+self.displaceY-(self.rectHeight/2))+"  /><text x='"+str(self.centerRectX +(self.rectWidth/2))+"' y='"+str(centerY+self.displaceY-(self.rectHeight/2)+30)+"' >"+center+"</text></g>\n"
         finalString=leftString+centerString
         firstRightChildLineY=0
         lastRightChildLineY=0
@@ -124,8 +125,24 @@ class SvgFlowChart:
         header+=''' 
         <defs>
         <linearGradient id="MyGradient"  x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="5%" stop-color="rgb(165, 212, 243)" />
-        <stop offset="95%" stop-color="rgb(255,255,255)" />
+        <stop offset="5%" stop-color="rgb(255,255,255)" />
+        <stop offset="95%" stop-color="rgb(165, 212, 243)" />
+        </linearGradient>
+        <linearGradient id="insert"  x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="5%" stop-color="#ffffff" />
+        <stop offset="95%" stop-color="#85e085" />
+        </linearGradient>
+        <linearGradient id="update"  x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="5%" stop-color="#ffffff" />
+        <stop offset="95%" stop-color="#ffdd99" />
+        </linearGradient>
+        <linearGradient id="delete"  x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="5%" stop-color="#ffffff" />
+        <stop offset="95%" stop-color="#ff9999" />
+        </linearGradient>
+        <linearGradient id="merge"  x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="5%" stop-color="#ffffff" />
+        <stop offset="95%" stop-color="#f1f1f1" />
         </linearGradient>
         </defs>\n'''
         footer="</svg></div></body></html>"
