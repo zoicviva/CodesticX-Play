@@ -15,6 +15,16 @@ class OperationCount:
                 index=i
                 break
         return index
+    
+    def writeResultToMasterJson(self,tableDictArr):
+        masterJson=open(self.userHome+"/CodeCompliance/temp/"+self.fileName+".master.json",'a')
+        masterJsonDict={}
+        masterJsonDict["type"]="operation_count"
+        masterJsonDict["value"]=tableDictArr
+        masterJson.write(json.dumps(masterJsonDict))
+        masterJson.close()
+        return 1
+    
     def tableWiseCountHtml(self,tableDictArr):
         masterJsonFileContent=open(self.userHome+"/CodeCompliance/temp/"+self.fileName+".master.json",'r')
         masterJsonDict={}
@@ -121,10 +131,8 @@ class OperationCount:
                         tableDict["merge"]=1
                     tableDictArr.append(tableDict)
         
-#         for tables in tableDictArr:
-#             print tables
+        self.writeResultToMasterJson(tableDictArr)
         htmlFileName=self.tableWiseCountHtml(tableDictArr)
-#         print "open this in web browser : file://"+os.path.abspath(htmlFileName)
         return "file://"+os.path.abspath(htmlFileName)
 # if __name__=="__main__":
 #     OperationCount("dq_base_7th_march.sql").tableWiseCount()
