@@ -51,7 +51,7 @@ class Complexity:
         if re.search(r'(case\s*when|extract|coalesce|distinct|group|count|where)',dictObj["statement"]):
             actDelScore=actDelScore+len(re.findall(r'(case\s*when|extract|coalesce|distinct|group|count|where)',dictObj["statement"]))
         if re.search(r'\s*(qualify|having|rollup|cube)\s*',dictObj["statement"]):
-            actDelScore=actDelScore+(len(re.findall(r'\s*(qualify|having|rollup|cube)\s*',self.stmt))*self.qualifyPoint)
+            actDelScore=actDelScore+(len(re.findall(r'\s*(qualify|having|rollup|cube)\s*',dictObj["statement"]))*self.qualifyPoint)
         if actDelScore > self.idealDeleteScore:
             self.complxStmts=self.complxStmts+1
         self.stmtCnt+=1

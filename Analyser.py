@@ -317,7 +317,7 @@ class Analyser:
         updateToTableName=""
         updateFromTableNames=[]
         try:
-            if re.search(r"update .*? from.*? set", stmt):
+            if re.search(r"update .*? from.*? set ", stmt):
                 fromLine="(select "+re.search(r"(from .*) set ", stmt).group(1)+")" # adding select here is mandatory to re utilize getTablesFromSelect
                 tableOrAlias=re.search(r"update (.*?) from", stmt).group(1)
                 lvlzero= self.getLevelZeroQuery(fromLine).strip("~")

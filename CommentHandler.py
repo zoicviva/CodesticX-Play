@@ -8,7 +8,7 @@ class CommentHandler:
     
     def removeComments(self):
         fileContent = open(self.filePath, "r")
-        fileText=fileContent.read()
+        fileText=fileContent.read().replace("\r","\n")  #added replace to handle old mac format return \r
         fileContent.close()
         rmvMulComment= re.sub("(/\*([^*]|(\*+[^*/]))*\*+/)|(//.*)","",fileText)
         rmvAllComment=re.sub("--.*","",rmvMulComment)
