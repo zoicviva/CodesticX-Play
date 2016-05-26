@@ -119,7 +119,7 @@ def startFolderButtonCallBack():
         OperationCount(fileName).tableWiseCount()
         TableFlow(fileName).tableFlowGenerator()
         currentFile+=1        
-    ApplicationHome().buildApplication(files)
+    ApplicationHome(files).buildApplication()
     ApplicationContainer().buildContainer(files)
     msg="Navigation Page :"+userHome+"/CodeCompliance/html/index.html"
     
