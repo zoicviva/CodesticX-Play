@@ -25,7 +25,7 @@ class ApplicationHome:
                     buildedObj["score"]=jsonObj
                 if jsonObj["type"]=="operation_count":
                     buildedObj["operation_count"]=jsonObj
-                self.masterJsons.append(buildedObj)
+            self.masterJsons.append(buildedObj)
             
     
     def getComplexityBarDataString(self):
