@@ -107,18 +107,27 @@ def startFolderButtonCallBack():
     
     currentFile=1
     totalFiles=len(files)
+    skippedFiles=[]
     for file in files:
-        fileNameSelected=folderSelected+"/"+file
-        fileName=UtilitiesCC.copyFileToOrig(fileNameSelected)
-        logging.info(fileName+" copied to orig folder")
-        fileContent=CommentHandler(fileName).removeComments()
-        UtilitiesCC.writeTextToFile(userHome+"/CodeCompliance/work", fileName, fileContent)
-        fileObj=StatementSequencer(fileName)
-        sequencedfilePath=fileObj.sequenceIt()
-        analyse=Analyser(fileName).startAnalysing(fileName)
-        OperationCount(fileName).tableWiseCount()
-        TableFlow(fileName).tableFlowGenerator()
-        currentFile+=1        
+        try:
+            fileNameSelected=folderSelected+"/"+file
+            fileName=UtilitiesCC.copyFileToOrig(fileNameSelected)
+            logging.info(fileName+" copied to orig folder")
+            fileContent=CommentHandler(fileName).removeComments()
+            UtilitiesCC.writeTextToFile(userHome+"/CodeCompliance/work", fileName, fileContent)
+            fileObj=StatementSequencer(fileName)
+            sequencedfilePath=fileObj.sequenceIt()
+            analyse=Analyser(fileName).startAnalysing(fileName)
+            OperationCount(fileName).tableWiseCount()
+            TableFlow(fileName).tableFlowGenerator()
+            currentFile+=1
+        except:
+            skippedFiles.applend(file)
+            logging.info("[SKIPPING FILE] --->"+file)
+    
+    for skipped in skippedFiles:
+        files.remove(skipped)
+    
     ApplicationHome(files).buildApplication()
     ApplicationContainer().buildContainer(files)
     msg="Navigation Page :"+userHome+"/CodeCompliance/html/index.html"

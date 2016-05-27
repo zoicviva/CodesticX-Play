@@ -385,7 +385,7 @@ class Analyser:
         dictObj["seq_nr"]=self.collectSeqNumeber
         dictObj["statement"]=stmt
         try:
-            preTableName=re.search(r"collect\s*(stats|statistics){1}\s*(on){0,1}(.*);", stmt).group(3).strip().split()
+            preTableName=re.search(r"collect\s*(stats|statistics|stat){1}\s*(on){0,1}(.*);", stmt).group(3).strip().split()
             finalTableName=preTableName[0]
             dictObj["table_name"]=finalTableName
             if(len(preTableName)>1):
