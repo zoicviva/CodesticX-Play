@@ -11,6 +11,7 @@ class CommentHandler:
         fileText=fileContent.read().replace("\r","\n")  #added replace to handle old mac format return \r
         fileContent.close()
         rmvMulComment= re.sub("(/\*([^*]|(\*+[^*/]))*\*+/)|(//.*)","",fileText)
-        rmvAllComment=re.sub("--.*","",rmvMulComment)
+        rmvConst=re.sub("'.*?'","''",rmvMulComment)
+        rmvAllComment=re.sub("--.*","",rmvConst)
         return rmvAllComment;
     

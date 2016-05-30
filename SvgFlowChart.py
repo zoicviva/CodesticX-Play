@@ -142,7 +142,7 @@ class SvgFlowChart:
         </linearGradient>
         <linearGradient id="merge"  x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="5%" stop-color="#ffffff" />
-        <stop offset="95%" stop-color="#f1f1f1" />
+        <stop offset="95%" stop-color="#ffff99" />
         </linearGradient>
         </defs>\n'''
         footer="</svg></div></body></html>"

@@ -131,7 +131,7 @@ class Analyser:
                 noBraces=re.sub(r'\(\s*\)',' ~ ',noTild)
                 splittedArr=re.sub('\sunion all\s|\sintersect\s|\sminus\s|\sunion\s',";;",noBraces).split(';;')
                 for item in splittedArr:
-                    noWhere=re.sub(r'select .* from','from',item)
+                    noWhere=re.sub(r'(select|sel) .* from','from',item)
                     noWhere=re.sub(r' where .*| group .*| qualify .*| having .*| order .*',';',noWhere)
                     
                     tables+=re.findall(r'from\s+([\w\d\.\_\$]+)',noWhere)
@@ -317,8 +317,8 @@ class Analyser:
         updateToTableName=""
         updateFromTableNames=[]
         try:
-            if re.search(r"update .*? from.*? set ", stmt):
-                fromLine="(select "+re.search(r"(from .*) set ", stmt).group(1)+")" # adding select here is mandatory to re utilize getTablesFromSelect
+            if re.search(r"update .*? from( |\(){1}.*? set ", stmt):    # added ( |\(){1} after 'from'
+                fromLine="(select "+re.search(r"(from( |\(){1}.*) set ", stmt).group(1)+")" # adding select here is mandatory to re utilize getTablesFromSelect added ( |\(){1}
                 tableOrAlias=re.search(r"update (.*?) from", stmt).group(1)
                 lvlzero= self.getLevelZeroQuery(fromLine).strip("~")
                 updateFromTableNames=self.getTablesFromSelect(fromLine)

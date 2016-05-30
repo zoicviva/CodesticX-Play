@@ -122,7 +122,7 @@ def startFolderButtonCallBack():
             TableFlow(fileName).tableFlowGenerator()
             currentFile+=1
         except:
-            skippedFiles.applend(file)
+            skippedFiles.append(file)
             logging.info("[SKIPPING FILE] --->"+file)
     
     for skipped in skippedFiles:
