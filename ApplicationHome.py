@@ -1,5 +1,6 @@
 import os
 import json
+import collections
 
 class ApplicationHome:
     
@@ -9,8 +10,38 @@ class ApplicationHome:
         self.files=files
         self.buildMasterData()
         
+    def getTablesFreq(self):
+        tables=[]
+        for fileName in self.files:
+            jsonFileContent=open(self.userHome+"/CodeCompliance/temp/"+fileName+".json",'r')
+            jsonObjArr=[]
+            for line in jsonFileContent:
+                jsonObjArr.append(json.loads(line))
+            jsonFileContent.close()            
+            for jsonObj in jsonObjArr:
+                if jsonObj["subtype"]=="insert":
+                    tables.append(jsonObj["table_name"])
+                    tables+=jsonObj["from_table_names"]
+                if jsonObj["subtype"]=="update":
+                    tables.append(jsonObj["table_name"])
+                    tables+=jsonObj["from_table_names"]
+                if jsonObj["subtype"]=="delete":
+                    tables.append(jsonObj["table_name"])
+                    tables+=jsonObj["from_table_names"]
+                if jsonObj["subtype"]=="merge":
+                    tables.append(jsonObj["table_name"])
+                    tables+=jsonObj["from_table_names"]  
+        counter=collections.Counter(tables)
+        lst=counter.most_common()
+        newList=[]
+        for (name,value) in lst:
+            dictObj={}
+            dictObj["name"]=name
+            dictObj["value"]=value
+            newList.append(dictObj)
+        return newList            
         
-    
+        
     def buildMasterData(self):
         for file in self.files:
             masterJsonFileContent=open(self.userHome+"/CodeCompliance/temp/"+file+".master.json",'r')
@@ -19,6 +50,8 @@ class ApplicationHome:
                 jsonObj=json.loads(line)
                 if jsonObj["type"]=="master_data" :
                     procName=jsonObj["proc_name"]
+                    if procName=="":
+                        print file
                     buildedObj["name"]=procName
                     buildedObj["master_data"]=jsonObj
                 if jsonObj["type"]=="score":
