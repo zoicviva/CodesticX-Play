@@ -79,17 +79,38 @@ class ApplicationHome:
         
         data+=str(dataArray)
         return data
-
+    
+    def getBubbleChartString(self):
+        bubbleData="["
+        bubbleData+="{text: 'Inserts', count: 10},"
+        bubbleData+="{text: 'Deletes', count: 10},"
+        bubbleData+="{text: 'Updates', count: 10},"
+        bubbleData+="{text: 'Merges', count: 10},"
+        bubbleData+="{text: 'Tables', count: 10},"
+        bubbleData+="{text: 'Procedures', count: 10},"
+        bubbleData+="]"
+        return bubbleData
+    
     def buildApplication(self):
+        
         htmlHeadFile=open(self.userHome+"/CodeCompliance/html/template/apphome_1.txt","r")
         htmlHeader=htmlHeadFile.read()
         htmlHeadFile.close()
+        htmlContent1File=open(self.userHome+"/CodeCompliance/html/template/apphome_2.txt","r")
+        htmlContent1=htmlContent1File.read()
+        htmlContent1File.close()
+        htmlContent2File=open(self.userHome+"/CodeCompliance/html/template/apphome_3.txt","r")
+        htmlContent2=htmlContent2File.read()
+        htmlContent2File.close()
         htmlTailFile=open(self.userHome+"/CodeCompliance/html/template/apphome_end.txt","r")
         htmlFooter=htmlTailFile.read()
         htmlTailFile.close()
         barChartData=self.getComplexityBarDataString()
         htmlFile=open(self.userHome+"/CodeCompliance/html/AppHome.html","w")
         htmlFile.write(htmlHeader)
+        htmlFile.write(self.getBubbleChartString())
+        htmlFile.write(htmlContent1)
+        htmlFile.write(htmlContent2)
         htmlFile.write(barChartData)
         htmlFile.write(htmlFooter)
         htmlFile.close()
