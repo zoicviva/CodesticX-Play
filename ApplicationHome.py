@@ -82,12 +82,24 @@ class ApplicationHome:
     
     def getBubbleChartString(self):
         bubbleData="["
-        bubbleData+="{text: 'Inserts', count: 10},"
-        bubbleData+="{text: 'Deletes', count: 10},"
-        bubbleData+="{text: 'Updates', count: 10},"
-        bubbleData+="{text: 'Merges', count: 10},"
-        bubbleData+="{text: 'Tables', count: 10},"
-        bubbleData+="{text: 'Procedures', count: 10},"
+        insertCount=0
+        deleteCount=0
+        updateCount=0
+        mergeCount=0
+        tableCount=0
+        procedureCount=len(self.masterJsons)
+        for masterJson in self.masterJsons:
+            insertCount+=masterJson["master_data"]["inserts"]
+            deleteCount+=masterJson["master_data"]["deletes"]
+            updateCount+=masterJson["master_data"]["updates"]
+            mergeCount+=masterJson["master_data"]["merges"]
+            tableCount+=len(masterJson["operation_count"]["value"])
+        bubbleData+="{text: 'Inserts', count: "+str(insertCount)+"},"
+        bubbleData+="{text: 'Deletes', count: "+str(deleteCount)+"},"
+        bubbleData+="{text: 'Updates', count: "+str(updateCount)+"},"
+        bubbleData+="{text: 'Merges', count: "+str(mergeCount)+"},"
+        bubbleData+="{text: 'Tables', count: "+str(tableCount)+"},"
+        bubbleData+="{text: 'Procedures', count: "+str(procedureCount)+"},"
         bubbleData+="]"
         return bubbleData
     
