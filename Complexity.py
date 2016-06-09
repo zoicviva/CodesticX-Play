@@ -16,7 +16,7 @@ class Complexity:
         self.eachTablePoint=5
         self.qualifyPoint=2
         self.idealInsertScore=15
-        self.idealUpdateScore=10
+        self.idealUpdateScore=10    
         self.idealDeleteScore=5
         self.idealMergeScore=10
         

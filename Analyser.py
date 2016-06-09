@@ -21,6 +21,25 @@ class Analyser:
         self.userHome=os.path.expanduser('~')
         self.complexityObj=Complexity()
         
+    def getfunctionFrequency(self):
+        configFile=open(self.userHome+"/CodeCompliance/config/regEx.txt","r")
+        procFile=open(self.userHome+"/CodeCompliance/temp/"+self.procfileName,"r")
+        procFileContent=procFile.read().lower()
+        procFile.close()
+        cntArr=[]
+        for reg in configFile:
+            dictObj={}
+            reg=reg.strip("\n").split("~")
+            dictObj["function"]=reg[0]
+            dictObj["count"]=len(re.findall(reg[1],procFileContent))
+            cntArr.append(dictObj)
+        configFile.close()
+        masterDictObj={}
+        masterDictObj["type"]="function_count"
+        masterDictObj["data"]=cntArr
+        return masterDictObj
+        
+            
     def masterJson(self,fileName):
         logging.info("masterJson function called")
         dictObj={}
@@ -63,9 +82,11 @@ class Analyser:
         dictObj["no_of_stmts"]=stmtCount
         jsonFileName=self.userHome+"/CodeCompliance/temp/"+fileName+".master.json"
         complexityDictObj=self.complexityObj.getFinalScore()
+        functionDictObj=self.getfunctionFrequency()
         toJson=open(jsonFileName,"w")
         toJson.write(json.dumps(dictObj)+"\n")
         toJson.write(json.dumps(complexityDictObj)+"\n")
+        toJson.write(json.dumps(functionDictObj)+"\n")
         toJson.close()
     
     def matches(self,line, opendelim='(', closedelim=')'):
