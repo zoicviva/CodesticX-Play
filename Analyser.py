@@ -22,7 +22,7 @@ class Analyser:
         self.complexityObj=Complexity()
         
     def getfunctionFrequency(self):
-        configFile=open(self.userHome+"/CodeCompliance/config/regEx.txt","r")
+        configFile=open(self.userHome+"/CodeCompliance/config/function_regex.config","r")
         procFile=open(self.userHome+"/CodeCompliance/temp/"+self.procfileName,"r")
         procFileContent=procFile.read().lower()
         procFile.close()
